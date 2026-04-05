@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReInvent - User Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.png" alt="Logo" class="main-logo">
+                <div class="brand-info">
+                    <h1>ReInvent.</h1>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <p class="section-title">MAIN</p>
+                    <a href="#"><img src="dashboard.png" class="nav-icon"> Dashboard</a>
+                    <a href="#" class="active"><img src="inventory.png" class="nav-icon"> Inventory</a>
+                    <a href="#"><img src="logistics.png" class="nav-icon"> Logistics</a>
+                    <a href="#"><img src="analytics.png" class="nav-icon"> Analytics</a>
+                </div>
+
+                <div class="nav-section">
+                    <p class="section-title">OPERATIONS</p>
+                    <a href="#"><img src="salesorders.png" class="nav-icon"> Sales Orders</a>
+                    <a href="#"><img src="purchaseorders.png" class="nav-icon"> Purchase Orders</a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-pill">
+                    <img src="logo.png" alt="User Avatar" class="avatar-sm">
+                    <div class="pill-text">
+                        <strong>John Doe</strong>
+                        <small>Administrator</small>
+                    </div>
+                    <span class="gear-icon">⚙</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-body">
+            <header class="top-bar">
+                <div class="page-title">
+                    <h1>My Profile</h1>
+                    <p>Manage your account settings</p>
+                </div>
+                <button class="save-btn">💾 Save Changes</button>
+            </header>
+
+            <div class="content-grid">
+                <section class="status-banner">
+                    <div class="banner-left">
+                        <div class="avatar-lg">
+                            <img src="logo.png" alt="Profile">
+                        </div>
+                        <div class="user-meta">
+                            <h2>John Doe <span class="badge">ACTIVE</span></h2>
+                            <p>johndoe@reinvent.io • Member since Jan 2026</p>
+                            <small>Last Login: Today, 9:42 AM</small>
+                        </div>
+                    </div>
+                    <button class="change-photo-btn">🖼 Change Photo</button>
+                </section>
+
+                <div class="column-left">
+                    <div class="card">
+                        <div class="card-head">
+                            <h3>Personal Information</h3>
+                            <button class="edit-btn">📝 Edit</button>
+                        </div>
+                        <div class="form-row">
+                            <div class="input-wrap">
+                                <label>First Name</label>
+                                <input type="text" value="John">
+                            </div>
+                            <div class="input-wrap">
+                                <label>Last Name</label>
+                                <input type="text" value="Doe">
+                            </div>
+                        </div>
+                        <div class="input-wrap">
+                            <label>Email Address</label>
+                            <input type="email" value="johndoe@reinvent.io">
+                        </div>
+                        <div class="input-wrap">
+                            <label>Phone Number</label>
+                            <input type="text" value="+977-9834567701">
+                        </div>
+                        <div class="input-wrap">
+                            <label>Company</label>
+                            <input type="text" value="Acme Trading Co.">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Change Password</h3>
+                        <div class="input-wrap">
+                            <label>Current Password</label>
+                            <input type="password" value="********">
+                        </div>
+                        <div class="input-wrap">
+                            <label>New Password</label>
+                            <input type="password" placeholder="Min. 8 characters">
+                        </div>
+                        <div class="input-wrap">
+                            <label>Confirm New Password</label>
+                            <input type="password" placeholder="Repeat new password">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column-right">
+                    <div class="card">
+                        <h3>My Activity</h3>
+                        <div class="stats-container">
+                            <div class="stat-item blue"><strong>247</strong> Transactions</div>
+                            <div class="stat-item green"><strong>38</strong> Products Added</div>
+                            <div class="stat-item yellow"><strong>12</strong> Pending Orders</div>
+                            <div class="stat-item cyan"><strong>5</strong> Reports Generated</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Notification Preferences</h3>
+                        <div class="toggle-group">
+                            <div class="toggle">
+                                <span>Low Stock Alerts</span>
+                                <input type="checkbox" checked>
+                            </div>
+                            <div class="toggle">
+                                <span>Order Updates</span>
+                                <input type="checkbox" checked>
+                            </div>
+                            <div class="toggle">
+                                <span>Aging Stock Alerts</span>
+                                <input type="checkbox" checked>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card danger-zone">
+                        <p>⚠️ <strong>Log Out</strong></p>
+                        <small>These actions are permanent and cannot be undone.</small>
+                        <button class="delete-btn">🗑 Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
