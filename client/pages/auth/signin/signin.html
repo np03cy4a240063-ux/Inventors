@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReInvent - Login</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="signin.css">
 </head>
+
 <body>
 
     <div class="page-container">
@@ -24,7 +26,8 @@
                 <div class="primary-blue-card">
                     <h2>Control your stock with confidence.</h2>
                     <div class="center-divider"></div>
-                    <p class="desc">Monitor inventory in real time, track purchases and sales, and get instant alerts before you run out of stock.</p>
+                    <p class="desc">Monitor inventory in real time, track purchases and sales, and get instant alerts
+                        before you run out of stock.</p>
                 </div>
 
                 <div class="side-efforts-panel">
@@ -44,23 +47,23 @@
                 <h1>Welcome back</h1>
                 <p>Sign in to your Reinvent account</p>
             </div>
-            
+
 
             <div class="login-box">
                 <div class="login-banner">
                     <img src="bg.jpg" alt="Banner">
                 </div>
-                <form class="actual-form">
+                <form class="actual-form" id="signinForm">
                     <div class="form-row">
                         <label>Email address</label>
-                        <input type="email">
+                        <input type="email" name="email" required>
                     </div>
                     <div class="form-row">
                         <div class="flex-label">
                             <label>Password</label>
-                            <a href="#">Forgot Password?</a>
+                            <a href="../forgot-password/forgot-password.html">Forgot Password?</a>
                         </div>
-                        <input type="password">
+                        <input type="password" name="password" required>
                     </div>
                     <div class="rem-me">
                         <input type="checkbox" id="rem">
@@ -68,12 +71,14 @@
                     </div>
                     <button type="submit" class="btn-signin">→| Sign In</button>
                     <hr class="sep">
-                    <p class="create">Don’t have an account? <a href="#">Create one for free</a></p>
+                    <p class="create">Don’t have an account? <a href="../signup/signup.html">Create one for free</a></p>
                 </form>
             </div>
             <p class="legal">By signing in, you agree to our Terms of Service & Privacy Policy</p>
         </section>
     </div>
 
+    <script src="signin.js"></script>
 </body>
+
 </html>

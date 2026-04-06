@@ -1,5 +1,6 @@
+<<<<<<< HEAD
 # Inventors
-
+=======
 # Inventory Management System (IMS)
 
 A focused inventory stock management system built by a team of 4 developers.
@@ -77,3 +78,4 @@ inventory-management-system/
 | DELETE | /api/inventory/products/:id | Delete product |
 | GET  | /api/inventory/orders/pending | Pending orders |
 | GET  | /api/report?from=&to=&format= | Export Excel/PDF |
+>>>>>>> ca5d5d9 (Add project files)
