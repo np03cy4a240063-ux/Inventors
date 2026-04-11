@@ -1,19 +1,29 @@
-```javascript
-// ===============================
-// Simple interaction example
-// ===============================
+// 1. Select the form element
+const loginForm = document.querySelector(".actual-form");
 
-// Select all feature buttons
-const buttons = document.querySelectorAll(".feature-list button");
+// 2. Listen for the 'submit' event
+loginForm.addEventListener("submit", function(event) {
+    // Stop the page from refreshing
+    event.preventDefault();
 
-// Add click effect
-buttons.forEach(button => {
+    // 3. Get the values from the inputs
+    const email = document.querySelector('input[type="email"]').value;
+    const password = document.querySelector('input[type="password"]').value;
 
-    button.addEventListener("click", function(){
+    // 4. Simple Validation
+    if (email === "" || password === "") {
+        alert("Please fill in both email and password.");
+        return;
+    }
 
-        alert("Feature coming soon!");
-
-    });
-
+    // 5. Simulate Login (In a real app, you'd send this to a database)
+    console.log("Attempting login with:", email);
+    
+    // For your testing:
+    if (email === "test@example.com" && password === "password123") {
+        alert("Success! Redirecting to Dashboard...");
+        // window.location.href = "dashboard.html"; // Uncomment when dashboard is ready
+    } else {
+        alert("Login failed. Check your credentials.");
+    }
 });
-```
