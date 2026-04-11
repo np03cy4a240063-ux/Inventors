@@ -34,3 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Navigation Buttons (API logic for User)
+    const btnSignup = document.getElementById('btn-signup');
+    const btnSignin = document.getElementById('btn-signin');
+
+    if (btnSignup) {
+        btnSignup.addEventListener('click', () => {
+            window.location.href = '../auth/signup/signup.html';
+        });
+    }
+
+    if (btnSignin) {
+        btnSignin.addEventListener('click', () => {
+            window.location.href = '../auth/signin/signin.html';
+        });
+    }
+});
