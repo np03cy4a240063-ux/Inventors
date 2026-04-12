@@ -26,6 +26,14 @@ class User {
     );
     return result.affectedRows > 0;
   }
+
+  static async updateProfile(id, { firstName, lastName, email, companyName }) {
+    const [result] = await db.execute(
+      'UPDATE users SET first_name = ?, last_name = ?, email = ?, company_name = ? WHERE id = ?',
+      [firstName, lastName, email, companyName, id]
+    );
+    return result.affectedRows > 0;
+  }
 }
 
 module.exports = User;

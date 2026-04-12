@@ -20,7 +20,14 @@ exports.signUp = async (req, res, next) => {
 
     const userId = await User.createUser(firstName, lastName, email, passwordHash, company);
 
-    res.status(201).json({ message: 'User created successfully.', userId });
+    // Generate JWT so user is immediately logged in
+    const token = jwt.sign(
+      { id: userId, email: email },
+      process.env.JWT_SECRET || 'secret',
+      { expiresIn: '1h' }
+    );
+
+    res.status(201).json({ message: 'User created successfully.', userId, token });
   } catch (err) {
     next(err);
   }

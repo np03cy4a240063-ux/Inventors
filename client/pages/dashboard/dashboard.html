@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ReInvent</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li class="active"><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h4>SETTINGS</h4>
+                    <ul>
+                        <li><a href="../profile/profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong id="sidebarUserName">John Doe</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-titles">
+                    <h1>Dashboard</h1>
+                    <p id="welcomeMessage">Welcome back, let's get started!</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search products, orders...">
+                    </div>
+                    <div class="profile-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <!-- Alert Box -->
+                <div class="alert-box warning">
+                    <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="alert-text">
+                        <strong>Attention Required</strong>
+                        <p id="dashboardAlert">0 products are below minimum stock threshold and 0 items are out of stock. <a href="inventory.html">View inventory</a>.</p>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>TOTAL REVENUE</span>
+                            <i class="fas fa-wallet stat-icon"></i>
+                        </div>
+                        <div class="stat-value">Rs. 0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-caret-up"></i> 10.4% vs last month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>STOCK VALUE</span>
+                            <i class="fas fa-box-open stat-icon"></i>
+                        </div>
+                        <div class="stat-value">Rs. 0</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-caret-down"></i> 3.5% vs last month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>GROSS PROFIT</span>
+                            <i class="fas fa-chart-line stat-icon"></i>
+                        </div>
+                        <div class="stat-value">Rs. 0</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-caret-up"></i> 8.2% vs last month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>TOTAL PRODUCTS</span>
+                            <i class="fas fa-tags stat-icon"></i>
+                        </div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-change neutral">
+                            <i class="fas fa-arrow-right"></i> 24 arrived this month
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Grid Layout -->
+                <div class="dashboard-grid">
+                    <!-- Left Column -->
+                    <div class="grid-left">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h3>Revenue Overview</h3>
+                                <div class="card-action">
+                                    <select class="dropdown-filter">
+                                        <option>Last 6 months</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="chart-subtitle">Monthly revenue vs target - 2026</p>
+                            <div class="chart-container-bar">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card product-movement-card">
+                            <div class="card-header border-bottom">
+                                <h3>Product Movement</h3>
+                                <a href="#" class="view-all">View all</a>
+                            </div>
+                            <div class="tabs">
+                                <button class="tab active">Fast Moving</button>
+                                <button class="tab">Slow Moving</button>
+                                <button class="tab">Aging Stock</button>
+                            </div>
+                            <div class="product-list" id="fastMovingProducts">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="grid-right">
+                        <div class="card donut-card">
+                            <div class="card-header no-margin">
+                                <h3>Stock Health</h3>
+                            </div>
+                            <div class="donut-chart-wrapper">
+                                <div class="donut-text">
+                                    <div class="donut-percent">74%</div>
+                                    <div class="donut-label">HEALTHY</div>
+                                </div>
+                                <canvas id="stockHealthChart"></canvas>
+                            </div>
+                            <div class="donut-legend">
+                                <div class="legend-item"><span class="color-box instock"></span> In Stock <span class="val">924</span></div>
+                                <div class="legend-item"><span class="color-box lowstock"></span> Low Stock <span class="val">186</span></div>
+                                <div class="legend-item"><span class="color-box outofstock"></span> Out of Stock <span class="val">138</span></div>
+                            </div>
+                        </div>
+
+                        <div class="card orders-card">
+                            <div class="card-header">
+                                <h3>Pending Sales Orders</h3>
+                                <a href="#" class="view-all">View all</a>
+                            </div>
+                            <div class="order-list">
+                                <div class="order-item">
+                                    <div class="order-top">
+                                        <span class="order-id blue-text">SO-2024-087</span>
+                                        <span class="badge pending">PENDING</span>
+                                    </div>
+                                    <div class="order-mid">
+                                        <span>Sales - 20 Mar 2026</span>
+                                        <span>5 items - Acme Corp</span>
+                                    </div>
+                                    <div class="order-bottom">
+                                        <strong>Rs. 12,240</strong>
+                                    </div>
+                                </div>
+                                <div class="order-item">
+                                    <div class="order-top">
+                                        <span class="order-id blue-text">SO-2024-082</span>
+                                        <span class="badge pending">PENDING</span>
+                                    </div>
+                                    <div class="order-mid">
+                                        <span>Sales - 21 Mar 2026</span>
+                                        <span>8 items - Beta Corp</span>
+                                    </div>
+                                    <div class="order-bottom">
+                                        <strong>Rs. 10,600</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card orders-card">
+                            <div class="card-header">
+                                <h3>Pending Purchase Orders</h3>
+                                <a href="#" class="view-all">View all</a>
+                            </div>
+                            <div class="order-list">
+                                <div class="order-item vertical-border">
+                                    <div class="order-top">
+                                        <span class="order-id blue-text">PO-2027-089</span>
+                                        <span class="badge transit">IN TRANSIT</span>
+                                    </div>
+                                    <div class="order-mid">
+                                        <span>Purchase - 20 Mar 2026</span>
+                                        <span>8 items - Laxis Corp</span>
+                                    </div>
+                                    <div class="order-bottom">
+                                        <strong>Rs. 10,040</strong>
+                                    </div>
+                                </div>
+                                <div class="order-item vertical-border">
+                                    <div class="order-top">
+                                        <span class="order-id blue-text">PO-2027-032</span>
+                                        <span class="badge transit">IN TRANSIT</span>
+                                    </div>
+                                    <div class="order-mid">
+                                        <span>Purchase - 23 Mar 2026</span>
+                                        <span>3 items - TechSupply Inc</span>
+                                    </div>
+                                    <div class="order-bottom">
+                                        <strong>Rs. 22,400</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Alerts Table -->
+                <div class="card full-width stock-alerts-card">
+                    <div class="card-header border-bottom padding-tb table-header-flex">
+                        <div class="header-left-with-icon">
+                            <i class="fas fa-exclamation-triangle alert-icon-color"></i>
+                            <h3>Stock Alerts</h3>
+                            <span class="subtitle">Items requiring immediate attention</span>
+                        </div>
+                        <div class="header-right-actions">
+                            <span class="top-badge warning-badge">5 LOW STOCK</span>
+                            <span class="top-badge danger-badge">2 OUT OF STOCK</span>
+                            <button class="outline-btn">View Inventory</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="inventory-table" id="stockAlertsTable">
+                            <thead>
+                                <tr>
+                                    <th>PRODUCT</th>
+                                    <th>SKU</th>
+                                    <th>CATEGORY</th>
+                                    <th>CURRENT STOCK</th>
+                                    <th>MIN. THRESHOLD</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Generated by JS based on inventory data -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="dashboard.js"></script>
+</body>
+</html>

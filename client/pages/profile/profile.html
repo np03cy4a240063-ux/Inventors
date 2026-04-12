@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReInvent - User Profile</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -22,7 +22,7 @@
             <nav class="sidebar-nav">
                 <div class="nav-section">
                     <p class="section-title">MAIN</p>
-                    <a href="#"><img src="dashboard.png" class="nav-icon"> Dashboard</a>
+                    <a href="../dashboard/dashboard.html"><img src="dashboard.png" class="nav-icon"> Dashboard</a>
                     <a href="#" class="active"><img src="inventory.png" class="nav-icon"> Inventory</a>
                     <a href="#"><img src="logistics.png" class="nav-icon"> Logistics</a>
                     <a href="#"><img src="analytics.png" class="nav-icon"> Analytics</a>
@@ -39,7 +39,7 @@
                 <div class="user-pill">
                     <img src="logo.png" alt="User Avatar" class="avatar-sm">
                     <div class="pill-text">
-                        <strong>John Doe</strong>
+                        <strong id="sidebarUserName">John Doe</strong>
                         <small>Administrator</small>
                     </div>
                     <span class="gear-icon">⚙</span>
@@ -63,8 +63,8 @@
                             <img src="logo.png" alt="Profile">
                         </div>
                         <div class="user-meta">
-                            <h2>John Doe <span class="badge">ACTIVE</span></h2>
-                            <p>johndoe@reinvent.io • Member since Jan 2026</p>
+                            <h2 id="profileUserName">John Doe <span class="badge">ACTIVE</span></h2>
+                            <p id="profileUserEmail">johndoe@reinvent.io • Member since Jan 2026</p>
                             <small>Last Login: Today, 9:42 AM</small>
                         </div>
                     </div>
@@ -80,16 +80,16 @@
                         <div class="form-row">
                             <div class="input-wrap">
                                 <label>First Name</label>
-                                <input type="text" value="John">
+                                <input type="text" id="profileFirstName" value="John">
                             </div>
                             <div class="input-wrap">
                                 <label>Last Name</label>
-                                <input type="text" value="Doe">
+                                <input type="text" id="profileLastName" value="Doe">
                             </div>
                         </div>
                         <div class="input-wrap">
                             <label>Email Address</label>
-                            <input type="email" value="johndoe@reinvent.io">
+                            <input type="email" id="profileEmail" value="johndoe@reinvent.io">
                         </div>
                         <div class="input-wrap">
                             <label>Phone Number</label>
@@ -97,7 +97,7 @@
                         </div>
                         <div class="input-wrap">
                             <label>Company</label>
-                            <input type="text" value="Acme Trading Co.">
+                            <input type="text" id="profileCompany" value="Acme Trading Co.">
                         </div>
                     </div>
 
@@ -156,7 +156,7 @@
             </div>
         </main>
     </div>
-    <script src="script.js"></script>
+    <script src="profile.js"></script>
 
 
 </body>
