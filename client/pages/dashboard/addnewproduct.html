@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Product</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="logo.png">
+      <h2>ReInvent.</h2>
+      <span>v1.0</span>
+    </div>
+    
+
+    <div class="menu">
+      <p>MAIN</p>
+      <a href="#"><img src="dashboard.png">Dashboard</a>
+      <a class="active"><img src="inventory.png">Inventory</a>
+      <a href="#"><img src="logistics.png">Logistics</a>
+      <a href="#"><img src="analytics.png">Analytics</a>
+
+      <p>OPERATIONS</p>
+      <a href="#"><img src="salesorders.png">Sales Orders</a>
+      <a href="#"><img src="purchaseorders.png">Purchase Orders</a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <h2>Add New Product</h2>
+
+    <div class="grid">
+
+      <!-- LEFT FORM -->
+      <div class="form">
+
+        <div class="card">
+          <h3>Basic Information</h3>
+
+          <input type="text" placeholder="Product Name">
+
+          <div class="row">
+            <input type="text" placeholder="SKU">
+            <button>Auto generate</button>
+          </div>
+
+          <div class="row">
+            <select>
+              <option>Select Category</option>
+            </select>
+            <input type="text" placeholder="Brand">
+          </div>
+
+          <textarea placeholder="Description"></textarea>
+        </div>
+
+        <div class="card">
+          <h3>Stock Settings</h3>
+
+          <div class="row">
+            <input type="number" id="stock" placeholder="Opening Stock">
+            <select>
+              <option>Unit (pcs)</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <input type="number" placeholder="Min Alert">
+            <input type="number" id="reorder" placeholder="Reorder Qty">
+          </div>
+
+          <input type="text" placeholder="Storage Location">
+        </div>
+
+        <div class="card">
+          <h3>Pricing</h3>
+
+          <div class="row">
+            <input type="number" id="cost" placeholder="Cost Price">
+            <input type="number" id="sell" placeholder="Selling Price">
+          </div>
+
+          <select>
+            <option>No Tax</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDE -->
+      <div class="side">
+
+        <div class="card upload">
+          <p>Drop image here</p>
+          <input type="file">
+        </div>
+
+        <!--  CALCULATION -->
+        <div class="card calc">
+          <h3>Stock Calculation</h3>
+
+          <p>Total Stock Value: <span id="total">Rs 0</span></p>
+          <p>Profit: <span id="profit">Rs 0</span></p>
+
+          <div class="note">
+            Based on selling & cost price
+          </div>
+        </div>
+
+        <button class="save">Save Product</button>
+        <button class="cancel">Cancel</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
