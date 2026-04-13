@@ -1,1 +1,109 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #f5f6fa;
+}
 
+.container {
+  display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 230px;
+  background: #5b7ea4;
+  color: white;
+  height: 100vh;
+  padding: 20px;
+}
+
+.logo img {
+  width: 50px;
+}
+
+.menu p {
+  margin-top: 20px;
+  font-size: 12px;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+}
+
+.menu a.active {
+  background: rgba(255,255,255,0.2);
+  border-radius: 8px;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+.grid {
+  display: flex;
+  gap: 20px;
+}
+
+.form {
+  flex: 2;
+}
+
+.side {
+  width: 250px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* INPUTS */
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+/* UPLOAD */
+.upload {
+  text-align: center;
+  border: 2px dashed #ccc;
+}
+
+/* CALC */
+.calc span {
+  font-weight: bold;
+}
+
+/* BUTTONS */
+.save {
+  width: 100%;
+  padding: 10px;
+  background: black;
+  color: white;
+  border: none;
+  margin-top: 10px;
+}
+
+.cancel {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
