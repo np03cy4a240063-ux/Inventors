@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Orders - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="profile_inv.css"> <!-- Reusing table layout styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dashboard-body inventory-page-bg">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li class="active"><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h4>SETTINGS</h4>
+                    <ul>
+                        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>John Doe</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-titles">
+                    <h1>Sales Orders</h1>
+                    <p id="totalOrdersText">0 total orders tracked</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-bar top-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="tableSearch" placeholder="Search by Order ID or Customer...">
+                    </div>
+                    <div class="notification-icon"><i class="fas fa-bell"></i></div>
+                    <div class="profile-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content inventory-content">
+                <div class="inventory-hero-header">
+                    <div class="hero-left">
+                        <h2>Sales Orders Management</h2>
+                        <p>Track customer orders, status, and revenue</p>
+                    </div>
+                    <button class="add-btn-primary" id="openAddModal">
+                        <i class="fas fa-plus"></i> Add Sales Order
+                    </button>
+                </div>
+
+                <!-- Main Table Card -->
+                <div class="card inventory-table-container">
+                    <div class="table-responsive-wrapper">
+                        <table class="refined-table" id="ordersTable">
+                            <thead>
+                                <tr>
+                                    <th>ORDER ID</th>
+                                    <th>DATE</th>
+                                    <th>CUSTOMER</th>
+                                    <th>ITEMS</th>
+                                    <th>TOTAL (Rs.)</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Generated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Sales Order Modal -->
+    <div id="orderModal" class="modal-overlay">
+        <div class="modal-box luxury">
+            <div class="modal-header">
+                <h2>Create Sales Order</h2>
+                <span class="modal-close" id="closeModal">&times;</span>
+            </div>
+            <form id="orderForm">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="f-group">
+                            <label>Order ID (Auto-generated)</label>
+                            <input type="text" id="oId" readonly>
+                        </div>
+                        <div class="f-group">
+                            <label>Date</label>
+                            <input type="date" id="oDate" required>
+                        </div>
+                    </div>
+                    <div class="f-group">
+                        <label>Customer / Business Name</label>
+                        <input type="text" id="oCustomer" required placeholder="Acme Corp">
+                    </div>
+                    <div class="form-row">
+                        <div class="f-group">
+                            <label>Total Items</label>
+                            <input type="number" id="oItems" required min="1">
+                        </div>
+                        <div class="f-group">
+                            <label>Total Amount (Rs.)</label>
+                            <input type="number" id="oTotal" required min="1">
+                        </div>
+                    </div>
+                    <div class="f-group">
+                        <label>Status</label>
+                        <select id="oStatus">
+                            <option value="PENDING">Pending</option>
+                            <option value="SHIPPED">Shipped</option>
+                            <option value="COMPLETED">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn-save" id="saveBtn">Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="sales_orders.js"></script>
+</body>
+</html>

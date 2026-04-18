@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="profile_inv.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dashboard-body profile-page-bg">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li class="active"><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h4>SETTINGS</h4>
+                    <ul>
+                        <li class="active"><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>John Doe</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-titles">
+                    <h1>My Profile</h1>
+                    <p>Manage your account settings</p>
+                </div>
+                <div class="header-actions">
+                    <button class="black-btn"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
+            </header>
+
+            <div class="dashboard-content profile-content">
+                <!-- User Header Card -->
+                <div class="card full-width profile-header-card">
+                    <div class="profile-header-left">
+                        <div class="profile-avatar-large">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="profile-header-info">
+                            <div class="name-status">
+                                <h2>John Doe</h2>
+                                <span class="badge active-badge">ACTIVE</span>
+                            </div>
+                            <div class="meta-row">
+                                <span>johndoe@reinvent.io</span> &bull; <span>Member since Jan 2026</span> &bull; 
+                            </div>
+                            <div class="meta-row login-time">
+                                Last Login: Today, 9:42 AM
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-header-right">
+                        <button class="outline-btn gray-btn"><i class="fas fa-image"></i> Change Photo</button>
+                    </div>
+                </div>
+
+                <div class="profile-grid">
+                    <!-- Left Col -->
+                    <div class="profile-left">
+                        <!-- Personal Info -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Personal Information</h3>
+                                <button class="outline-btn small-btn"><i class="fas fa-edit"></i> Edit</button>
+                            </div>
+                            <form class="profile-form">
+                                <div class="form-row-multi">
+                                    <div class="form-group">
+                                        <label>First Name</label>
+                                        <input type="text" value="John">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Last Name</label>
+                                        <input type="text" value="Doe">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" value="johndoe@reinvent.io">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="text" value="+977-9834567701">
+                                </div>
+                                <div class="form-group">
+                                    <label>Company</label>
+                                    <input type="text" value="Acme Trading Co.">
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Change Password -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Change Password</h3>
+                            </div>
+                            <form class="profile-form">
+                                <div class="form-group">
+                                    <label>Current Password</label>
+                                    <input type="password" value="********">
+                                </div>
+                                <div class="form-group">
+                                    <label>New Password</label>
+                                    <input type="password" placeholder="Min. 8 characters">
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirm New Password</label>
+                                    <input type="password" placeholder="Repeat new password">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right Col -->
+                    <div class="profile-right">
+                        <!-- My Activity -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>My Activity</h3>
+                            </div>
+                            <div class="activity-grid">
+                                <div class="activity-box blue-box">
+                                    <div class="act-val">247</div>
+                                    <div class="act-lbl">Transactions</div>
+                                </div>
+                                <div class="activity-box green-box">
+                                    <div class="act-val">38</div>
+                                    <div class="act-lbl">Products Added</div>
+                                </div>
+                                <div class="activity-box yellow-box">
+                                    <div class="act-val">12</div>
+                                    <div class="act-lbl">Pending Orders</div>
+                                </div>
+                                <div class="activity-box cyan-box">
+                                    <div class="act-val">5</div>
+                                    <div class="act-lbl">Reports Generated</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notification Prefs -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Notification Preferences</h3>
+                            </div>
+                            <div class="notif-list">
+                                <div class="notif-item">
+                                    <div class="notif-text">
+                                        <strong>Low Stock Alerts</strong>
+                                        <p>Notify when stock drops below threshold</p>
+                                    </div>
+                                    <div class="toggle-switch active"></div>
+                                </div>
+                                <div class="notif-item">
+                                    <div class="notif-text">
+                                        <strong>Order Updates</strong>
+                                        <p>Purchase & sales order status changes</p>
+                                    </div>
+                                    <div class="toggle-switch active"></div>
+                                </div>
+                                <div class="notif-item">
+                                    <div class="notif-text">
+                                        <strong>Aging Stock Alerts</strong>
+                                        <p>Item sitting > 60 days</p>
+                                    </div>
+                                    <div class="toggle-switch active"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Log Out -->
+                        <div class="card logout-card">
+                            <div class="logout-header">
+                                <i class="fas fa-exclamation-triangle text-red"></i> Log Out
+                            </div>
+                            <p class="logout-text">These actions are permanent and cannot be undone.</p>
+                            <button class="red-btn"><i class="fas fa-trash"></i> Log Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div class="brand-watermark">
+        <h1>ReInvent.</h1>
+        <p>powered by lidea</p>
+    </div>
+
+    <script src="profile_v3.js"></script>
+</body>
+</html>
