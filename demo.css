@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  
+  body {
+    background: #f2f2f2;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* LEFT PANEL */
+  .left {
+    width: 35%;
+    background: #5f7fa3;
+    color: white;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .logo {
+    font-size: 40px;
+    margin-bottom: 20px;
+  }
+  
+  .left h1 {
+    font-size: 32px;
+  }
+  
+  .sub {
+    font-size: 12px;
+    margin-bottom: 40px;
+  }
+  
+  .card {
+    background: #6f8fb3;
+    padding: 25px;
+    border-radius: 20px;
+    margin-top: 40px;
+  }
+  
+  .card h3 {
+    margin-bottom: 15px;
+  }
+  
+  .card ul {
+    margin: 15px 0;
+    padding-left: 15px;
+  }
+  
+  .card li {
+    margin-bottom: 8px;
+  }
+  
+  .small {
+    font-size: 12px;
+  }
+  
+  /* RIGHT PANEL */
+  .right {
+    width: 65%;
+    padding: 60px;
+  }
+  
+  .right h2 {
+    font-size: 30px;
+  }
+  
+  .subtitle {
+    color: gray;
+    margin-bottom: 30px;
+  }
+  
+  /* FORM */
+  .form-box {
+    background: #ddd;
+    padding: 30px;
+    border-radius: 20px;
+    width: 500px;
+  }
+  
+  .row {
+    display: flex;
+    gap: 10px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+  }
+  
+  /* CHECKBOX */
+  .checkbox {
+    font-size: 13px;
+  }
+  
+  .checkbox input {
+    width: auto;
+  }
+  
+  /* BUTTON */
+  button {
+    width: 100%;
+    padding: 12px;
+    background: #7ea37e;
+    border: none;
+    border-radius: 10px;
+    margin-top: 15px;
+    cursor: pointer;
+  }
+  
+  /* LOGIN TEXT */
+  .login-text {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+  
+  .login-text span {
+    color: blue;
+    cursor: pointer;
+  }
