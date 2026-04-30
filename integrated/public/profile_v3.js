@@ -116,14 +116,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Toggle Switches
-    document.querySelectorAll('.toggle-switch').forEach(sw => {
+    const switches = document.querySelectorAll('.toggle-switch');
+    
+    // Load saved notification states
+    const savedNotifStates = JSON.parse(localStorage.getItem('reinvent_notifications_state'));
+    if (savedNotifStates && Array.isArray(savedNotifStates)) {
+        switches.forEach((sw, idx) => {
+            if (savedNotifStates[idx]) sw.classList.add('active');
+            else sw.classList.remove('active');
+        });
+    }
+
+    switches.forEach((sw, idx) => {
         sw.addEventListener('click', () => {
             sw.classList.toggle('active');
+            // Save state on change
+            const currentStates = Array.from(switches).map(s => s.classList.contains('active'));
+            localStorage.setItem('reinvent_notifications_state', JSON.stringify(currentStates));
         });
     });
 
     // Change Photo
     const changePhotoBtn = document.querySelector('.profile-header-right .outline-btn');
+    const avatar = document.querySelector('.profile-avatar-large');
+    
+    // Load saved photo
+    const savedPhoto = localStorage.getItem('reinvent_profile_photo');
+    if (savedPhoto && avatar) {
+        avatar.innerHTML = `<img src="${savedPhoto}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+    }
+
     if (changePhotoBtn) {
         changePhotoBtn.addEventListener('click', () => {
             const input = document.createElement('input');
@@ -134,8 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = (event) => {
-                        const avatar = document.querySelector('.profile-avatar-large');
-                        avatar.innerHTML = `<img src="${event.target.result}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                        const photoData = event.target.result;
+                        if (avatar) avatar.innerHTML = `<img src="${photoData}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                        localStorage.setItem('reinvent_profile_photo', photoData);
                     };
                     reader.readAsDataURL(file);
                 }
