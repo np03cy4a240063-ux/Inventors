@@ -74,7 +74,7 @@ app.post('/api/queries', (req, res) => {
 // Get Profile
 app.get('/api/profile/:email', (req, res) => {
     const { email } = req.params;
-    const sql = 'SELECT first_name as firstName, last_name as lastName, email, company, phone, profile_photo as profilePhoto, notif_low_stock, notif_order_updates, notif_aging_stock FROM users WHERE email = ?';
+    const sql = 'SELECT firstName, lastName, email, company, phone, profile_photo as profilePhoto, notif_low_stock, notif_order_updates, notif_aging_stock FROM user_profiles WHERE email = ?';
     db.query(sql, [email], (err, results) => {
         if (err) return res.status(500).json({ error: 'DB Error' });
         if (results.length === 0) return res.status(404).json({ error: 'User not found' });
@@ -92,7 +92,7 @@ app.post('/api/profile', (req, res) => {
     
     if (!email) return res.status(400).json({ error: 'Email required' });
 
-    db.query('SELECT id FROM users WHERE email = ?', [email], (err, results) => {
+    db.query('SELECT id FROM user_profiles WHERE email = ?', [email], (err, results) => {
         if (err) return res.status(500).json({ error: 'DB Error' });
         
         let notifQuery = '';
@@ -106,18 +106,33 @@ app.post('/api/profile', (req, res) => {
         queryParams.push(email);
         
         if (results.length === 0) {
-            // User doesn't exist, we could insert, but they wouldn't have a password. Return error.
-            return res.status(404).json({ error: 'User not found' });
+            // User profile doesn't exist, insert new row
+            let insertSql = `INSERT INTO user_profiles (firstName, lastName, email, phone, company, profile_photo`;
+            let insertVals = `VALUES (?, ?, ?, ?, ?, ?`;
+            let insertParams = [firstName || '', lastName || '', email, phone || '', company || '', profilePhoto || null];
+            
+            if (notifications && Array.isArray(notifications)) {
+                 insertSql += `, notif_low_stock, notif_order_updates, notif_aging_stock`;
+                 insertVals += `, ?, ?, ?`;
+                 insertParams.push(notifications[0] ? 1 : 0, notifications[1] ? 1 : 0, notifications[2] ? 1 : 0);
+            }
+            insertSql += `) ` + insertVals + `)`;
+            
+            db.query(insertSql, insertParams, (err) => {
+                if (err) return res.status(500).json({ error: 'DB Error inserting profile' });
+                res.json({ message: 'Profile created successfully' });
+            });
         } else {
-            const sql = `UPDATE users SET first_name = ?, last_name = ?, phone = ?, company = ?, profile_photo = ? ${notifQuery} WHERE email = ?`;
+            // Update existing row
+            const sql = `UPDATE user_profiles SET firstName = ?, lastName = ?, phone = ?, company = ?, profile_photo = ? ${notifQuery} WHERE email = ?`;
             db.query(sql, queryParams, (err) => {
-                if (err) return res.status(500).json({ error: 'DB Error updating' });
+                if (err) return res.status(500).json({ error: 'DB Error updating profile' });
                 res.json({ message: 'Profile updated successfully' });
             });
         }
     });
 });
 
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.use((req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 app.listen(PORT, () => console.log(`ReInvent v2 running on port ${PORT}`));
