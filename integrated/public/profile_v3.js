@@ -2,48 +2,79 @@ console.log('REINVENT_V2_PROFILE_V3_ACTIVE');
 document.addEventListener('DOMContentLoaded', () => {
     const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
     
+    function updateUIWithData(data) {
+        const fN = document.getElementById('first-name');
+        const lN = document.getElementById('last-name');
+        const em = document.getElementById('email-address');
+        const ph = document.getElementById('phone-number');
+        const co = document.getElementById('company-name');
+        
+        if(fN && data.firstName) fN.value = data.firstName;
+        if(lN && data.lastName) lN.value = data.lastName;
+        if(em && data.email) em.value = data.email;
+        if(ph && data.phone) ph.value = data.phone;
+        if(co && data.company) co.value = data.company;
+        
+        // Update header tags
+        const hName = document.querySelector('.name-status h2');
+        const hEmail = document.querySelector('.meta-row span');
+        const sidebarName = document.querySelector('.u-text strong');
+        
+        const fullName = `${data.firstName || 'John'} ${data.lastName || 'Doe'}`.trim();
+        if(hName) hName.textContent = fullName;
+        if(hEmail) hEmail.textContent = data.email || 'johndoe@reinvent.io';
+        if(sidebarName) sidebarName.textContent = fullName;
+    }
+
     // Simulate user fetch for profile
     async function loadProfile() {
+        // Try local storage first
+        const localData = localStorage.getItem('reinvent_profile_data');
+        if (localData) {
+            try {
+                const data = JSON.parse(localData);
+                updateUIWithData(data);
+            } catch (e) {
+                console.error("Error parsing local profile data", e);
+            }
+        }
+
         try {
             const resp = await fetch(`${API_BASE}/api/profile`);
             if (resp.ok) {
                 const data = await resp.json();
-                const fN = document.querySelector('input[value="John"]');
-                const lN = document.querySelector('input[value="Doe"]');
-                const em = document.querySelector('input[type="email"]');
-                const co = document.querySelector('input[value="Acme Trading Co."]');
-                
-                if(fN) fN.value = data.firstName || 'John';
-                if(lN) lN.value = data.lastName || 'Doe';
-                if(em) em.value = data.email || 'johndoe@reinvent.io';
-                if(co) co.value = data.company || 'Acme Trading Co.';
-                
-                // Update header tags
-                const hName = document.querySelector('.name-status h2');
-                const hEmail = document.querySelector('.meta-row span');
-                if(hName) hName.textContent = (data.firstName + ' ' + data.lastName).trim() || 'John Doe';
-                if(hEmail) hEmail.textContent = data.email || 'johndoe@reinvent.io';
+                updateUIWithData(data);
+                localStorage.setItem('reinvent_profile_data', JSON.stringify(data));
             }
         } catch(err) {
-            console.error('Profile fetch failed', err);
+            console.warn('Profile fetch failed, using local data if available', err);
         }
     }
 
     loadProfile();
 
-    const saveChangesBtn = document.querySelector('.black-btn');
+    const saveChangesBtn = document.querySelector('.header-actions .black-btn');
     if (saveChangesBtn) {
         saveChangesBtn.addEventListener('click', async () => {
             saveChangesBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
             
-            const inputs = document.querySelectorAll('.profile-left input');
+            const fN = document.getElementById('first-name');
+            const lN = document.getElementById('last-name');
+            const em = document.getElementById('email-address');
+            const ph = document.getElementById('phone-number');
+            const co = document.getElementById('company-name');
+            
             const data = {
-                firstName: inputs[0].value,
-                lastName: inputs[1].value,
-                email: inputs[2].value,
-                phone: inputs[3].value,
-                company: inputs[4].value
+                firstName: fN ? fN.value : '',
+                lastName: lN ? lN.value : '',
+                email: em ? em.value : '',
+                phone: ph ? ph.value : '',
+                company: co ? co.value : ''
             };
+
+            // Save to localStorage immediately
+            localStorage.setItem('reinvent_profile_data', JSON.stringify(data));
+            updateUIWithData(data);
 
             try {
                 const resp = await fetch(`${API_BASE}/api/profile`, {
@@ -54,11 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (resp.ok) {
                     alert('Profile updated successfully!');
-                    const hName = document.querySelector('.name-status h2');
-                    if(hName) hName.textContent = data.firstName + ' ' + data.lastName;
+                } else {
+                    throw new Error('Server error');
                 }
             } catch(err) {
-                alert('Saved locally only (Connection error).');
+                alert('Profile saved locally (Offline mode).');
             }
             saveChangesBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
         });
