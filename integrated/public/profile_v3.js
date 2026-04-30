@@ -24,15 +24,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if(hName) hName.textContent = fullName;
         if(hEmail) hEmail.textContent = data.email || 'johndoe@reinvent.io';
         if(sidebarName) sidebarName.textContent = fullName;
+
+        // Sync notifications
+        if (data.notifications && Array.isArray(data.notifications)) {
+            const switches = document.querySelectorAll('.toggle-switch');
+            switches.forEach((sw, idx) => {
+                if (data.notifications[idx]) sw.classList.add('active');
+                else sw.classList.remove('active');
+            });
+            localStorage.setItem('reinvent_notifications_state', JSON.stringify(data.notifications));
+        }
+
+        // Sync photo
+        if (data.profilePhoto) {
+            const avatar = document.querySelector('.profile-avatar-large');
+            if (avatar) avatar.innerHTML = `<img src="${data.profilePhoto}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+            localStorage.setItem('reinvent_profile_photo', data.profilePhoto);
+        }
     }
 
     // Simulate user fetch for profile
     async function loadProfile() {
+        let currentEmail = 'johndoe@reinvent.io';
+        
         // Try local storage first
         const localData = localStorage.getItem('reinvent_profile_data');
         if (localData) {
             try {
                 const data = JSON.parse(localData);
+                if (data.email) currentEmail = data.email;
                 updateUIWithData(data);
             } catch (e) {
                 console.error("Error parsing local profile data", e);
@@ -40,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const resp = await fetch(`${API_BASE}/api/profile`);
+            const resp = await fetch(`${API_BASE}/api/profile/${encodeURIComponent(currentEmail)}`);
             if (resp.ok) {
                 const data = await resp.json();
                 updateUIWithData(data);
@@ -64,12 +84,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const ph = document.getElementById('phone-number');
             const co = document.getElementById('company-name');
             
+            const switches = document.querySelectorAll('.toggle-switch');
+            const notifications = Array.from(switches).map(s => s.classList.contains('active'));
+            const profilePhoto = localStorage.getItem('reinvent_profile_photo') || null;
+
             const data = {
                 firstName: fN ? fN.value : '',
                 lastName: lN ? lN.value : '',
                 email: em ? em.value : '',
                 phone: ph ? ph.value : '',
-                company: co ? co.value : ''
+                company: co ? co.value : '',
+                notifications: notifications,
+                profilePhoto: profilePhoto
             };
 
             // Save to localStorage immediately
