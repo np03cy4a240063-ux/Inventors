@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="logistics.css">
+    <link rel="stylesheet" href="header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li class="active"><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>Loading...</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <div class="global-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search products, orders...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn-new-order secondary"><i class="fas fa-file-alt"></i> New Purchase Order</button>
+                    <button class="btn-new-order primary"><i class="fas fa-plus"></i> New Sales Order</button>
+                    <button class="header-btn" id="notifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <a href="profile.html" class="user-profile-btn">
+                        <div class="user-avatar">...</div>
+                        <div class="user-info-text">
+                            <span>Loading...</span>
+                            <small>Administrator</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <h3>Notifications</h3>
+                        <a href="#">Mark all as read</a>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <!-- Notifications will be added here -->
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <!-- Metrics Row -->
+                <div class="logistics-metrics">
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h4>Pending Sales</h4>
+                            <div class="metric-value" id="pendingSalesCount">0</div>
+                            <div class="metric-subtext" id="pendingSalesValue">- Rs. 0 total</div>
+                        </div>
+                        <div class="metric-icon"><i class="fas fa-shopping-cart"></i></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h4>Pending Purchases</h4>
+                            <div class="metric-value" id="pendingPurchaseCount">0</div>
+                            <div class="metric-subtext" id="pendingPurchaseValue">- Rs. 0 total</div>
+                        </div>
+                        <div class="metric-icon"><i class="fas fa-clipboard-list"></i></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h4>In Transit</h4>
+                            <div class="metric-value" id="transitCount">0</div>
+                            <div class="metric-subtext">- Expected this week</div>
+                        </div>
+                        <div class="metric-icon"><i class="fas fa-truck"></i></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-info">
+                            <h4>Completed (Mar)</h4>
+                            <div class="metric-value" id="completedCount">0</div>
+                            <div class="metric-change up"><i class="fas fa-caret-up"></i> 18% vs Feb</div>
+                        </div>
+                        <div class="metric-icon" style="color: #10B981;"><i class="fas fa-check-square"></i></div>
+                    </div>
+                </div>
+
+                <!-- Main Grid -->
+                <div class="logistics-grid">
+                    <!-- Left: Table -->
+                    <div class="table-container">
+                        <div class="table-tabs">
+                            <div class="table-tab active" data-tab="sales"><i class="fas fa-shopping-cart"></i> Sales Orders</div>
+                            <div class="table-tab" data-tab="purchase"><i class="fas fa-file-invoice"></i> Purchase Orders</div>
+                            <div class="table-tab" data-tab="completed"><i class="fas fa-check-circle"></i> Completed</div>
+                        </div>
+
+                        <div class="table-controls">
+                            <div class="table-search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search orders...">
+                            </div>
+                            <div class="table-filters">
+                                <select class="table-filter-select">
+                                    <option>All Status</option>
+                                </select>
+                                <select class="table-filter-select">
+                                    <option>This Month</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <table class="logistics-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer / Supplier</th>
+                                    <th>Items</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logisticsTableBody">
+                                <!-- Data will be populated by JS -->
+                                <tr>
+                                    <td>
+                                        <span class="order-id-cell">SO-2026-087</span>
+                                        <span class="order-type-label">Sales Order</span>
+                                    </td>
+                                    <td>
+                                        <span class="customer-name">Acme Corporation</span>
+                                        <span class="customer-email">john@reinvent.io</span>
+                                    </td>
+                                    <td>3 items</td>
+                                    <td>29 March 2026</td>
+                                    <td class="amount-cell">Rs. 2,240</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="order-id-cell">SO-2026-086</span>
+                                        <span class="order-type-label">Sales Order</span>
+                                    </td>
+                                    <td>
+                                        <span class="customer-name">Sliva Sdn Bhd</span>
+                                        <span class="customer-email">procurement@sliva.my</span>
+                                    </td>
+                                    <td>7 items</td>
+                                    <td>28 March 2026</td>
+                                    <td class="amount-cell">Rs. 2,890</td>
+                                    <td><span class="status-badge transit">In Transit</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="order-id-cell">SO-2026-085</span>
+                                        <span class="order-type-label">Sales Order</span>
+                                    </td>
+                                    <td>
+                                        <span class="customer-name">Global Trading Co.</span>
+                                        <span class="customer-email">orders@globaltrading.com</span>
+                                    </td>
+                                    <td>2 items</td>
+                                    <td>27 March 2026</td>
+                                    <td class="amount-cell">Rs. 7,200</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="order-id-cell">PO-2026-042</span>
+                                        <span class="order-type-label">Purchase Order</span>
+                                    </td>
+                                    <td>
+                                        <span class="customer-name">Sliva Sdn Bhd</span>
+                                        <span class="customer-email">procurement@sliva.my</span>
+                                    </td>
+                                    <td>8 items</td>
+                                    <td>27 March 2026</td>
+                                    <td class="amount-cell">Rs. 4,800</td>
+                                    <td><span class="status-badge transit">In Transit</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="order-id-cell">PO-2026-041</span>
+                                        <span class="order-type-label">Purchase Order</span>
+                                    </td>
+                                    <td>
+                                        <span class="customer-name">HP Leva</span>
+                                        <span class="customer-email">leva@hp.com.my</span>
+                                    </td>
+                                    <td>12 items</td>
+                                    <td>25 March 2026</td>
+                                    <td class="amount-cell">Rs. 7,600</td>
+                                    <td><span class="status-badge confirm">Pending Confirm</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Right: Sidebar -->
+                    <div class="sidebar-right">
+                        <div class="calendar-card">
+                            <div class="card-title" id="calendarTitle">March 2026 <div style="display: flex; gap: 10px; font-size: 0.8rem; color: #999;"><i class="fas fa-chevron-left"></i> <i class="fas fa-chevron-right"></i></div></div>
+                            <div class="calendar-grid" id="calendarGrid">
+                                <div class="calendar-day-label">SU</div>
+                                <div class="calendar-day-label">MO</div>
+                                <div class="calendar-day-label">TU</div>
+                                <div class="calendar-day-label">WE</div>
+                                <div class="calendar-day-label">TH</div>
+                                <div class="calendar-day-label">FR</div>
+                                <div class="calendar-day-label">SA</div>
+                                <!-- Calendar days will be dynamically injected here -->
+                            </div>
+                            <div style="margin-top: 15px; display: flex; gap: 15px; font-size: 0.7rem;">
+                                <div style="display: flex; align-items: center; gap: 5px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #F59E0B;"></span> Has event</div>
+                                <div style="display: flex; align-items: center; gap: 5px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #3B82F6;"></span> Today</div>
+                            </div>
+                        </div>
+
+                        <div class="schedule-card">
+                            <div class="card-title" id="scheduleTitle">Today</div>
+                            <div class="schedule-list" id="scheduleList">
+                                <!-- Today's schedule will be dynamically injected here -->
+                            </div>
+                        </div>
+
+                        <div class="upcoming-card">
+                            <div class="card-title">Upcoming</div>
+                            <div class="upcoming-list" id="upcomingList">
+                                <!-- Upcoming tasks will be dynamically injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="header.js"></script>
+    <script src="logistics.js"></script>
+</body>
+</html>

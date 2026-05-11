@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li class="active"><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h4>SETTINGS</h4>
+                    <ul>
+                        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>Loading...</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <div class="global-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search products, orders...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="notifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <a href="profile.html" class="user-profile-btn">
+                        <div class="user-avatar">...</div>
+                        <div class="user-info-text">
+                            <span>Loading...</span>
+                            <small>Administrator</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <h3>Notifications</h3>
+                        <a href="#">Mark all as read</a>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <div class="notif-item">
+                            <div class="notif-icon blue">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="notif-content">
+                                <p>New sales order <strong>SO-2026-087</strong> received.</p>
+                                <span>2 minutes ago</span>
+                            </div>
+                        </div>
+                        <div class="notif-item">
+                            <div class="notif-icon green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="notif-content">
+                                <p>Inventory sync completed successfully.</p>
+                                <span>1 hour ago</span>
+                            </div>
+                        </div>
+                        <div class="notif-item">
+                            <div class="notif-icon red">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="notif-content">
+                                <p><strong>Low Stock Alert:</strong> Hair Brush 15mm is below 10 units.</p>
+                                <span>3 hours ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <!-- Alert Box -->
+                <div class="alert-box warning">
+                    <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="alert-text">
+                        <strong>Attention Required</strong>
+                        <p id="dashboardAlert">0 products are below minimum stock threshold and 0 items are out of stock. <a href="inventory.html">View inventory</a>.</p>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>TOTAL REVENUE</span>
+                            <i class="fas fa-wallet stat-icon"></i>
+                        </div>
+                        <div class="stat-value">Rs. 0</div>
+                        <div class="stat-change">
+                            <i class="fas fa-caret-up"></i> 0% vs last month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>STOCK VALUE</span>
+                            <i class="fas fa-box-open stat-icon"></i>
+                        </div>
+                        <div class="stat-value">Rs. 0</div>
+                        <div class="stat-change">
+                            <i class="fas fa-caret-down"></i> 0% vs last month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>GROSS PROFIT</span>
+                            <i class="fas fa-chart-line stat-icon"></i>
+                        </div>
+                        <div class="stat-value">Rs. 0</div>
+                        <div class="stat-change">
+                            <i class="fas fa-caret-up"></i> 0% vs last month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>TOTAL PRODUCTS</span>
+                            <i class="fas fa-tags stat-icon"></i>
+                        </div>
+                        <div class="stat-value">0</div>
+                        <div class="stat-change">
+                            <i class="fas fa-arrow-right"></i> 0 arrived this month
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Grid Layout -->
+                <div class="dashboard-grid">
+                    <!-- Left Column -->
+                    <div class="grid-left">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h3>Revenue Overview</h3>
+                                <div class="card-action">
+                                    <select class="dropdown-filter">
+                                        <option>Last 6 months</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="chart-subtitle">Monthly revenue vs target - 2026</p>
+                            <div class="chart-container-bar">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card product-movement-card">
+                            <div class="card-header border-bottom">
+                                <h3>Product Movement</h3>
+                                <a href="inventory.html" class="view-all">View all</a>
+                            </div>
+                            <div class="tabs">
+                                <button class="tab active">Fast Moving</button>
+                                <button class="tab">Slow Moving</button>
+                                <button class="tab">Aging Stock</button>
+                            </div>
+                            <div class="product-list" id="fastMovingProducts">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="grid-right">
+                        <div class="card donut-card">
+                            <div class="card-header no-margin">
+                                <h3>Stock Health</h3>
+                            </div>
+                            <div class="donut-chart-wrapper">
+                                <div class="donut-text">
+                                    <div class="donut-percent">0%</div>
+                                    <div class="donut-label">HEALTHY</div>
+                                </div>
+                                <canvas id="stockHealthChart"></canvas>
+                            </div>
+                            <div class="donut-legend">
+                                <div class="legend-item"><span class="color-box instock"></span> In Stock <span class="val">0</span></div>
+                                <div class="legend-item"><span class="color-box lowstock"></span> Low Stock <span class="val">0</span></div>
+                                <div class="legend-item"><span class="color-box outofstock"></span> Out of Stock <span class="val">0</span></div>
+                            </div>
+                        </div>
+
+                        <div class="card orders-card">
+                            <div class="card-header">
+                                <h3>Pending Sales Orders</h3>
+                                <a href="sales_orders.html" class="view-all">View all</a>
+                            </div>
+                            <div class="order-list" id="dashboardSalesOrders">
+                                <!-- Dynamic Orders populated by dashboard_v3.js -->
+                            </div>
+                        </div>
+
+                        <div class="card orders-card">
+                            <div class="card-header">
+                                <h3>Pending Purchase Orders</h3>
+                                <a href="purchase_orders.html" class="view-all">View all</a>
+                            </div>
+                            <div class="order-list" id="dashboardPurchaseOrders">
+                                <!-- Dynamic Orders populated by dashboard_v3.js -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Alerts Table -->
+                <div class="card full-width stock-alerts-card">
+                    <div class="card-header border-bottom padding-tb table-header-flex">
+                        <div class="header-left-with-icon">
+                            <i class="fas fa-exclamation-triangle alert-icon-color"></i>
+                            <h3>Stock Alerts</h3>
+                            <span class="subtitle">Items requiring immediate attention</span>
+                        </div>
+                        <div class="header-right-actions">
+                            <span class="top-badge">0 LOW STOCK</span>
+                            <span class="top-badge">0 OUT OF STOCK</span>
+                            <button class="outline-btn" onclick="window.location.href='inventory.html'">View Inventory</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="inventory-table" id="stockAlertsTable">
+                            <thead>
+                                <tr>
+                                    <th>PRODUCT</th>
+                                    <th>SKU</th>
+                                    <th>CATEGORY</th>
+                                    <th>CURRENT STOCK</th>
+                                    <th>MIN. THRESHOLD</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Generated by JS based on inventory data -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="header.js"></script>
+    <script src="dashboard_v3.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+ReInvent v2 running on port 5000
+--- DATABASE CONNECTED SUCCESSFULLY ---
+Connected to: reinvent_db_v2
+12:07:55 PM - GET /api/products
