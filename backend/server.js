@@ -6,11 +6,11 @@ const path = require('path');
 const bcrypt = require('bcrypt'); // Added for security
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../integrated/public')));
 
 // MySQL Connection
 const db = mysql.createConnection({
@@ -18,6 +18,7 @@ const db = mysql.createConnection({
     user: 'root',
     password: '',
     database: 'reinvent_db_v2'
+    
 });
 
 db.connect((err) => {
@@ -71,6 +72,8 @@ app.post('/api/queries', (req, res) => {
     });
 });
 
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../integrated/public/index.html'));
+});
 
 app.listen(PORT, () => console.log(`ReInvent v2 running on port ${PORT}`));

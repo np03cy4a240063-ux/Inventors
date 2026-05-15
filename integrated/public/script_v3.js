@@ -47,7 +47,7 @@ window.showToast = function(message, type = 'error') {
 window.showPopup = window.showToast;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
+    const API_BASE = '';
 
     // ─── Contact / Query Form ────────────────────────────────────────────────
     const queryForm = document.getElementById('queryForm');
