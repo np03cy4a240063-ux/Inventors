@@ -57,3 +57,58 @@ VALUES ('Test1', 'Skuxxxxx', 'test 0', 'wdwd', 1200.00, 2200.00, 50, 10);
 -- Insert a sample sales order
 INSERT INTO sales_orders (order_id, date, customer, items_count, total, status)
 VALUES ('SO-2026-001', '2026-04-13', 'Acme Trading Co.', 5, 12500.00, 'PENDING');
+
+CREATE TABLE IF NOT EXISTS purchase_orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id VARCHAR(50) NOT NULL,
+    date DATE NOT NULL,
+    supplier VARCHAR(255) NOT NULL,
+    items_count INT NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(50) DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- Audit Logs for operations
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    action_type VARCHAR(50) NOT NULL, -- SALES, PURCHASE, ADJUSTMENT, PRODUCT
+    entity_id VARCHAR(50), -- Order ID or Product ID
+    details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_type ENUM('SALES', 'PURCHASE') NOT NULL,
+    order_db_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS alerts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    type VARCHAR(50) NOT NULL, -- 'LOW_STOCK', 'OUT_OF_STOCK', 'ORDER_PLACED'
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS stock_adjustments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    adjustment_type ENUM('ADD', 'SUBTRACT', 'SET') NOT NULL,
+    quantity INT NOT NULL,
+    reason TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS product_logs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    action VARCHAR(50) NOT NULL, -- 'ADDED', 'EDITED', 'DELETED'
+    details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

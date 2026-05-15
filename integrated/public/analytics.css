@@ -1,0 +1,347 @@
+/* Analytics Page Styles */
+
+:root {
+    --ana-bg: #F1F5F9;
+    --ana-card: #FFFFFF;
+    --ana-border: #E2E8F0;
+    --ana-text: #1E293B;
+    --ana-muted: #64748B;
+    --ana-blue: #3B82F6;
+    --ana-green: #10B981;
+    --ana-red: #EF4444;
+    --ana-yellow: #F59E0B;
+}
+
+.header-select {
+    padding: 8px 12px;
+    border: 1px solid var(--ana-border);
+    border-radius: 8px;
+    background: white;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.export-btn {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid var(--ana-border);
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.analytics-header-info {
+    margin-bottom: 25px;
+}
+
+.analytics-header-info h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0 0 8px 0;
+}
+
+.analytics-header-info p {
+    color: var(--ana-muted);
+    font-size: 0.95rem;
+    max-width: 800px;
+}
+
+/* Metrics Row */
+.analytics-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.ana-metric-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--ana-border);
+    text-align: center;
+}
+
+.ana-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--ana-muted);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.ana-metric-card h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0 0 5px 0;
+}
+
+.ana-change {
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.ana-change.positive { color: var(--ana-green); }
+.ana-change.negative { color: var(--ana-red); }
+
+/* Charts Grid */
+.analytics-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.ana-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--ana-border);
+    padding: 25px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.card-header p {
+    margin: 5px 0 0;
+    font-size: 0.85rem;
+    color: var(--ana-muted);
+}
+
+.chart-legend {
+    display: flex;
+    gap: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ana-muted);
+}
+
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.dot.blue { background: var(--ana-blue); }
+.dot.green { background: var(--ana-green); }
+.dot.light-blue { background: #93C5FD; }
+.dot.red { background: #F87171; }
+
+canvas {
+    max-height: 250px;
+}
+
+/* Middle Row */
+.analytics-middle-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.aging-summary-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 20px 0 30px;
+}
+
+.age-box {
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.age-box strong {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.age-box span {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.age-box.green { background: #F0FDF4; color: var(--ana-green); }
+.age-box.cyan { background: #ECFEFF; color: #0891B2; }
+.age-box.yellow { background: #FFFBEB; color: var(--ana-yellow); }
+.age-box.red { background: #FEF2F2; color: var(--ana-red); }
+
+.critical-aging-items h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ana-text);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.critical-aging-items i { color: var(--ana-yellow); }
+
+.ana-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ana-table th {
+    text-align: left;
+    padding: 12px;
+    font-size: 0.7rem;
+    color: var(--ana-muted);
+    background: #F8FAFC;
+    border-radius: 6px;
+}
+
+.ana-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid var(--ana-border);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.ana-table td .sku {
+    font-size: 0.75rem;
+    color: var(--ana-muted);
+    display: block;
+}
+
+.red-text { color: var(--ana-red); }
+
+/* Right Sub Grid */
+.right-sub-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.cat-item {
+    margin-bottom: 15px;
+}
+
+.cat-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.cat-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: #F1F5F9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.cat-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+}
+
+.top-sell-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.top-sell-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.top-sell-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rank {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: white;
+}
+
+.rank-1 { background: #F59E0B; }
+.rank-2 { background: #94A3B8; }
+.rank-3 { background: #D97706; }
+.rank-4 { background: #E2E8F0; color: #64748B; }
+.rank-5 { background: #F1F5F9; color: #94A3B8; }
+
+.top-sell-qty {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ana-green);
+}
+
+/* Bottom Grid */
+.analytics-bottom-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.ana-mini-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--ana-border);
+    padding: 20px;
+    text-align: center;
+}
+
+.mini-icon {
+    font-size: 1.5rem;
+    color: var(--ana-muted);
+    margin-bottom: 15px;
+}
+
+.ana-mini-card .label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ana-muted);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.ana-mini-card h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0 0 5px 0;
+}
+
+.ana-mini-card .sub {
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.green-text { color: var(--ana-green); }

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="fetch_interceptor.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Report - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="auth_check.js"></script>
+    <style>
+        .export-page-bg {
+            background-color: #F8FAFC;
+        }
+        
+        .export-hero-header {
+            background: white;
+            padding: 25px 35px;
+            border-bottom: 1px solid #E2E8F0;
+            margin-bottom: 25px;
+        }
+        
+        .export-hero-header h2 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1E293B;
+            margin: 0 0 5px 0;
+        }
+        
+        .export-hero-header p {
+            color: #64748B;
+            font-size: 14px;
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .breadcrumbs {
+            font-size: 14px;
+            color: #1E293B;
+            margin: 0 35px 20px;
+        }
+        
+        .export-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            margin: 0 35px;
+            padding: 0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .export-card-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #E2E8F0;
+            font-weight: 700;
+            color: #1E293B;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+        
+        .export-content {
+            padding: 30px;
+        }
+        
+        .export-columns {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .export-column {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .column-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #475569;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .radio-option input {
+            display: none;
+        }
+        
+        .radio-custom {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #CBD5E1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: 0.2s;
+        }
+        
+        .radio-option input:checked + .radio-custom {
+            border-color: #4F46E5;
+        }
+        
+        .radio-option input:checked + .radio-custom::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #4F46E5;
+            border-radius: 50%;
+        }
+        
+        .radio-option input:checked ~ span.option-text {
+            color: #1E293B;
+            font-weight: 700;
+        }
+        
+        .custom-range-input {
+            margin-top: 10px;
+            margin-left: 30px;
+        }
+        
+        .custom-range-input input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #CBD5E1;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #94A3B8;
+            outline: none;
+        }
+        
+        .export-bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .bottom-group-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        
+        .download-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            border: 2px solid #4F46E5;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .download-icon {
+            width: 36px;
+            height: 36px;
+            background: #F1F5F9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748B;
+        }
+        
+        .download-text strong {
+            display: block;
+            font-size: 13px;
+            color: #1E293B;
+            margin-bottom: 2px;
+        }
+        
+        .download-text span {
+            font-size: 11px;
+            color: #64748B;
+        }
+        
+        .recipient-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1E293B;
+            background: #F8FAFC;
+            outline: none;
+        }
+        
+        .export-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .btn-exp-cancel {
+            padding: 12px 30px;
+            border: 1px solid #1E293B;
+            border-radius: 12px;
+            background: white;
+            color: #1E293B;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-exp-create {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            background: #E8EFC3;
+            color: #1E293B;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .btn-back-bottom {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            color: #64748B;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 30px;
+        }
+        
+        /* Success View Styles */
+        .success-box {
+            background: #F4F5E6;
+            border-radius: 16px;
+            padding: 50px 30px;
+            text-align: center;
+            margin: 30px auto;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            background: #86EFAC;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        .success-box h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1E293B;
+            margin: 0 0 20px 0;
+        }
+        
+        .success-meta {
+            background: rgba(0,0,0,0.05);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #64748B;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .success-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body class="dashboard-body export-page-bg">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li class="active"><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>Loading...</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="padding: 0; display: flex; flex-direction: column;">
+            <header class="top-header" style="justify-content: flex-end;">
+                <div class="header-right">
+                    <button class="header-btn" id="notifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <a href="profile.html" class="user-profile-btn">
+                        <div class="user-avatar">...</div>
+                        <div class="user-info-text">
+                            <span>Loading...</span>
+                            <small>Administrator</small>
+                        </div>
+                    </a>
+                </div>
+            </header>
+
+            <div class="export-hero-header">
+                <h2>Export Report</h2>
+                <p>Analyze your profits, losses, revenue with clear visualization<br>from this feature.</p>
+            </div>
+
+            <div class="breadcrumbs">
+                <span style="color: #94A3B8;">Analytics ></span> <b>Export Report</b>
+            </div>
+
+            <!-- Configuration View -->
+            <div class="export-card" id="configView">
+                <div class="export-card-header">
+                    <i class="fas fa-sliders-h"></i> Configure Export
+                </div>
+                
+                <div class="export-content">
+                    <div class="export-columns">
+                        <!-- Column 1: DATE RANGE -->
+                        <div class="export-column">
+                            <div class="column-title">DATE RANGE</div>
+                            <div class="options-list">
+                                <label class="radio-option">
+                                    <input type="radio" name="dateRange">
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Last 7 days</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="dateRange" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Last 30 days</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="dateRange">
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Last 90 days</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="dateRange">
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Last 120 days</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="dateRange">
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Last 180 days</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="dateRange">
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Custom range</span>
+                                </label>
+                                <div class="custom-range-input">
+                                    <input type="text" placeholder="Enter custom range">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: DATA FIELDS -->
+                        <div class="export-column">
+                            <div class="column-title">DATA FIELDS</div>
+                            <div class="options-list">
+                                <label class="radio-option">
+                                    <input type="checkbox" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Transaction</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Product Added</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Sales Order</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Purchase Order</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Inventory Turnover</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: COMPARISONS TO INCLUDE -->
+                        <div class="export-column">
+                            <div class="column-title">COMPARISONS TO INCLUDE</div>
+                            <div class="options-list">
+                                <label class="radio-option">
+                                    <input type="checkbox" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Revenue vs Profit</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Profit Margin</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox">
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text" style="font-weight: 500; color: #94A3B8;">Units Sold</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text">Avg. Order Value</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox">
+                                    <span class="radio-custom"></span>
+                                    <span class="option-text" style="font-weight: 500; color: #94A3B8;">Dead Stock Value</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="export-bottom-row">
+                        <div>
+                            <div class="bottom-group-title"><span style="color: #DC2626; margin-right: 3px;">*</span> EXPORT METHOD</div>
+                            <div class="bottom-group-title" style="text-transform: none; margin-bottom: 10px;">This report is saved as .pdf.</div>
+                            <div class="download-box">
+                                <div class="download-icon"><i class="fas fa-download"></i></div>
+                                <div class="download-text">
+                                    <strong>Download file</strong>
+                                    <span>Save directly to your device</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="bottom-group-title" style="margin-bottom: 25px;">RECIPIENTS</div>
+                            <input type="text" class="recipient-input" value="johndoe@reinvent.io" id="exportRecipient">
+                        </div>
+                    </div>
+
+                    <div class="export-actions">
+                        <button class="btn-exp-cancel" onclick="window.location.href='analytics.html'"><i class="fas fa-times"></i> Cancel</button>
+                        <button class="btn-exp-create" id="btnCreate">Create Export</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success View -->
+            <div class="export-card" id="successView" style="display: none;">
+                <div class="export-card-header">
+                    <i class="fas fa-sliders-h"></i> Configure Export
+                </div>
+                
+                <div class="export-content">
+                    <div class="success-box">
+                        <div class="success-icon"><i class="fas fa-check"></i></div>
+                        <h2>Report Successfully Created!</h2>
+                        <div class="success-meta">
+                            <i class="far fa-clock"></i> <span id="successDateText">Created on 2 Apr 2026 11:30 AM - by John Doe</span>
+                        </div>
+                    </div>
+                    
+                    <div class="success-actions">
+                        <a href="dashboard.html" class="btn-exp-cancel" style="text-decoration: none;"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+                        <a href="analytics.html" class="btn-exp-cancel" style="text-decoration: none;">Back to Analytics <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 40px;" id="backToAnalyticsContainer">
+                <a href="analytics.html" class="btn-back-bottom"><i class="fas fa-chart-line" style="color: #4F46E5;"></i> Back to Analytics</a>
+            </div>
+            
+        </main>
+    </div>
+    
+    <script src="header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnCreate = document.getElementById('btnCreate');
+            const configView = document.getElementById('configView');
+            const successView = document.getElementById('successView');
+            const backContainer = document.getElementById('backToAnalyticsContainer');
+            const recipientInput = document.getElementById('exportRecipient');
+            const successDateText = document.getElementById('successDateText');
+
+            // Set user email from local storage if available
+            const sessionData = JSON.parse(localStorage.getItem('reinvent_session'));
+            const userEmail = sessionData?.email || 'johndoe@reinvent.io';
+            const userName = sessionData?.name || 'John Doe';
+            recipientInput.value = userEmail;
+
+            btnCreate.addEventListener('click', () => {
+                // Formatting current date for the success message
+                const now = new Date();
+                const options = { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
+                const formattedDate = now.toLocaleDateString('en-GB', options).replace(',', '');
+                
+                successDateText.textContent = `Created on ${formattedDate} - by ${userName}`;
+                
+                // Toggle Views
+                configView.style.display = 'none';
+                backContainer.style.display = 'none';
+                successView.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

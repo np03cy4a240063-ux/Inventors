@@ -6,18 +6,11 @@ const db = mysql.createConnection({
     database: 'reinvent_db_v2'
 });
 
-db.connect((err) => {
+db.query('DESCRIBE users', (err, results) => {
     if (err) {
-        console.error('Connection failed:', err.message);
+        console.error(err);
         process.exit(1);
     }
-    console.log('CONNECTED');
-    db.query('SHOW TABLES', (err, results) => {
-        if (err) {
-            console.error('Query failed:', err.message);
-            process.exit(1);
-        }
-        console.log('TABLES:', results.map(r => Object.values(r)[0]));
-        db.end();
-    });
+    console.log(results);
+    process.exit(0);
 });

@@ -1,157 +1,114 @@
-console.log('REINVENT_V2_PROFILE_V3_ACTIVE');
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
-    
-    // Simulate user fetch for profile
+    const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
+    let user = JSON.parse(localStorage.getItem('user'));
+
+    if (!user || !user.email) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    function updateUIWithData(data) {
+        const fN = document.getElementById('profileFirstName');
+        const lN = document.getElementById('profileLastName');
+        const em = document.getElementById('profileEmail');
+        const ph = document.getElementById('profilePhone');
+        const co = document.getElementById('profileCompany');
+
+        if (fN && data.first_name) fN.value = data.first_name;
+        if (lN && data.last_name) lN.value = data.last_name;
+        if (em && data.email) em.value = data.email;
+        if (ph && data.phone) ph.value = data.phone;
+        if (co && data.company) co.value = data.company;
+
+        // Update header tags
+        const hName = document.querySelector('.name-status h2');
+        const hEmail = document.querySelector('.meta-row span');
+        const sidebarName = document.querySelector('.u-text strong');
+
+        const fullName = `${data.first_name || 'User'} ${data.last_name || ''}`.trim();
+        if (hName) hName.textContent = fullName;
+        if (hEmail) hEmail.textContent = data.email || user.email;
+        if (sidebarName) sidebarName.textContent = fullName;
+    }
+
     async function loadProfile() {
         try {
-            const resp = await fetch(`${API_BASE}/api/profile`);
+            const resp = await fetch(`${API_BASE}/api/profile?email=${encodeURIComponent(user.email)}`);
             if (resp.ok) {
                 const data = await resp.json();
-                const fN = document.querySelector('input[value="John"]');
-                const lN = document.querySelector('input[value="Doe"]');
-                const em = document.querySelector('input[type="email"]');
-                const co = document.querySelector('input[value="Acme Trading Co."]');
-                
-                if(fN) fN.value = data.firstName || 'John';
-                if(lN) lN.value = data.lastName || 'Doe';
-                if(em) em.value = data.email || 'johndoe@reinvent.io';
-                if(co) co.value = data.company || 'Acme Trading Co.';
-                
-                // Update header tags
-                const hName = document.querySelector('.name-status h2');
-                const hEmail = document.querySelector('.meta-row span');
-                if(hName) hName.textContent = (data.firstName + ' ' + data.lastName).trim() || 'John Doe';
-                if(hEmail) hEmail.textContent = data.email || 'johndoe@reinvent.io';
+                updateUIWithData(data);
+                localStorage.setItem('reinvent_profile_data', JSON.stringify(data));
             }
-        } catch(err) {
-            console.error('Profile fetch failed', err);
+        } catch (err) {
+            console.warn('Profile fetch failed', err);
         }
     }
 
     loadProfile();
 
-    const saveChangesBtn = document.querySelector('.black-btn');
+    const saveChangesBtn = document.getElementById('saveChangesBtn');
     if (saveChangesBtn) {
         saveChangesBtn.addEventListener('click', async () => {
             saveChangesBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-            
-            const inputs = document.querySelectorAll('.profile-left input');
+
             const data = {
-                firstName: inputs[0].value,
-                lastName: inputs[1].value,
-                email: inputs[2].value,
-                phone: inputs[3].value,
-                company: inputs[4].value
+                firstName: document.getElementById('profileFirstName').value,
+                lastName: document.getElementById('profileLastName').value,
+                email: user.email,
+                phone: document.getElementById('profilePhone').value,
+                company: document.getElementById('profileCompany').value
             };
 
             try {
                 const resp = await fetch(`${API_BASE}/api/profile`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-                
+
                 if (resp.ok) {
-                    alert('Profile updated successfully!');
-                    const hName = document.querySelector('.name-status h2');
-                    if(hName) hName.textContent = data.firstName + ' ' + data.lastName;
+                    showToast('Profile updated successfully!', 'success');
+                    loadProfile(); // Refresh UI
+                } else {
+                    const res = await resp.json();
+                    showToast('Error: ' + (res.error || 'Server error'), 'error');
                 }
-            } catch(err) {
-                alert('Saved locally only (Connection error).');
+            } catch (err) {
+                showToast('Connection error.', 'error');
             }
             saveChangesBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
         });
     }
 
     // Toggle Edit Mode
-    const editBtn = document.querySelector('.outline-btn.small-btn');
+    const editBtn = document.getElementById('editProfileBtn');
     let isEditing = false;
     if (editBtn) {
         editBtn.addEventListener('click', () => {
             isEditing = !isEditing;
-            const inputs = document.querySelectorAll('.profile-form input:not([type="password"])');
+            const inputs = document.querySelectorAll('.profile-form input:not([readonly])');
             inputs.forEach(input => {
                 input.readOnly = !isEditing;
                 if (isEditing) input.classList.add('editing-active');
                 else input.classList.remove('editing-active');
             });
             editBtn.innerHTML = isEditing ? '<i class="fas fa-check"></i> Done' : '<i class="fas fa-edit"></i> Edit';
-            if (isEditing) inputs[0].focus();
         });
-        
+
         // Initially lock inputs
-        document.querySelectorAll('.profile-form input').forEach(inp => inp.readOnly = true);
-    }
-
-    // Toggle Switches
-    document.querySelectorAll('.toggle-switch').forEach(sw => {
-        sw.addEventListener('click', () => {
-            sw.classList.toggle('active');
-        });
-    });
-
-    // Change Photo
-    const changePhotoBtn = document.querySelector('.profile-header-right .outline-btn');
-    if (changePhotoBtn) {
-        changePhotoBtn.addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const avatar = document.querySelector('.profile-avatar-large');
-                        avatar.innerHTML = `<img src="${event.target.result}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
+        document.querySelectorAll('.profile-form input').forEach(inp => {
+            if (inp.id !== 'profileEmail') inp.readOnly = true;
         });
     }
 
-    // Change Password simulation
-    const passwordInputs = document.querySelectorAll('.profile-right input[type="password"]');
-    if (passwordInputs.length >= 3) {
-        const changePasswordBtn = document.createElement('button');
-        changePasswordBtn.className = 'black-btn';
-        changePasswordBtn.style.marginTop = '20px';
-        changePasswordBtn.innerHTML = '<i class="fas fa-key"></i> Update Password';
-        
-        const passwordCard = passwordInputs[0].closest('.card');
-        passwordCard.appendChild(changePasswordBtn);
-
-        changePasswordBtn.addEventListener('click', () => {
-            const current = passwordInputs[0].value;
-            const newP = passwordInputs[1].value;
-            const confirmP = passwordInputs[2].value;
-
-            if (!newP || !confirmP) {
-                alert("Please enter a new password.");
-                return;
-            }
-            if (newP !== confirmP) {
-                alert("New passwords do not match!");
-                return;
-            }
-            
-            alert("Password updated successfully!");
-            passwordInputs.forEach(i => i.value = '');
-        });
-
-        // Enable password inputs
-        passwordInputs.forEach(i => i.readOnly = false);
-    }
-
-    const logoutBtn = document.querySelector('.red-btn');
-    if(logoutBtn) {
+    // Logout
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-             if(confirm("Are you sure you want to log out?")) {
-                 location.href = "login.html";
-             }
+            if (confirm("Are you sure you want to log out?")) {
+                localStorage.removeItem('user');
+                location.href = "login.html";
+            }
         });
     }
 });

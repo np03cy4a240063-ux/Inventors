@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="fetch_interceptor.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - ReInvent</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="header.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="auth_check.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dashboard-body">
@@ -53,7 +56,7 @@
                  <div class="user-bottom-info">
                      <i class="fas fa-user-circle"></i>
                      <div class="u-text">
-                         <strong>John Doe</strong>
+                         <strong>Loading...</strong>
                          <span>Administrator</span>
                      </div>
                  </div>
@@ -64,17 +67,60 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="top-header">
-                <div class="header-titles">
-                    <h1>Dashboard</h1>
-                    <p>Welcome back, let's get started!</p>
-                </div>
-                <div class="header-actions">
-                    <div class="search-bar">
+                <div class="header-left">
+                    <div class="global-search">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search products, orders...">
+                        <input type="text" id="globalSearchInput" placeholder="Search products, orders...">
                     </div>
-                    <div class="profile-icon">
-                        <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="notifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <a href="profile.html" class="user-profile-btn">
+                        <div class="user-avatar">...</div>
+                        <div class="user-info-text">
+                            <span>Loading...</span>
+                            <small>Administrator</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <h3>Notifications</h3>
+                        <a href="#">Mark all as read</a>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <div class="notif-item">
+                            <div class="notif-icon blue">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="notif-content">
+                                <p>New sales order <strong>SO-2026-087</strong> received.</p>
+                                <span>2 minutes ago</span>
+                            </div>
+                        </div>
+                        <div class="notif-item">
+                            <div class="notif-icon green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="notif-content">
+                                <p>Inventory sync completed successfully.</p>
+                                <span>1 hour ago</span>
+                            </div>
+                        </div>
+                        <div class="notif-item">
+                            <div class="notif-icon red">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="notif-content">
+                                <p><strong>Low Stock Alert:</strong> Hair Brush 15mm is below 10 units.</p>
+                                <span>3 hours ago</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -97,8 +143,8 @@
                             <i class="fas fa-wallet stat-icon"></i>
                         </div>
                         <div class="stat-value">Rs. 0</div>
-                        <div class="stat-change positive">
-                            <i class="fas fa-caret-up"></i> 10.4% vs last month
+                        <div class="stat-change">
+                            <i class="fas fa-caret-up"></i> 0% vs last month
                         </div>
                     </div>
                     <div class="stat-card">
@@ -107,8 +153,8 @@
                             <i class="fas fa-box-open stat-icon"></i>
                         </div>
                         <div class="stat-value">Rs. 0</div>
-                        <div class="stat-change negative">
-                            <i class="fas fa-caret-down"></i> 3.5% vs last month
+                        <div class="stat-change">
+                            <i class="fas fa-caret-down"></i> 0% vs last month
                         </div>
                     </div>
                     <div class="stat-card">
@@ -117,8 +163,8 @@
                             <i class="fas fa-chart-line stat-icon"></i>
                         </div>
                         <div class="stat-value">Rs. 0</div>
-                        <div class="stat-change positive">
-                            <i class="fas fa-caret-up"></i> 8.2% vs last month
+                        <div class="stat-change">
+                            <i class="fas fa-caret-up"></i> 0% vs last month
                         </div>
                     </div>
                     <div class="stat-card">
@@ -127,8 +173,8 @@
                             <i class="fas fa-tags stat-icon"></i>
                         </div>
                         <div class="stat-value">0</div>
-                        <div class="stat-change neutral">
-                            <i class="fas fa-arrow-right"></i> 24 arrived this month
+                        <div class="stat-change">
+                            <i class="fas fa-arrow-right"></i> 0 arrived this month
                         </div>
                     </div>
                 </div>
@@ -155,12 +201,14 @@
                         <div class="card product-movement-card">
                             <div class="card-header border-bottom">
                                 <h3>Product Movement</h3>
-                                <a href="#" class="view-all">View all</a>
+                                <a href="inventory.html" class="view-all">View all</a>
                             </div>
-                            <div class="tabs">
-                                <button class="tab active">Fast Moving</button>
-                                <button class="tab">Slow Moving</button>
-                                <button class="tab">Aging Stock</button>
+                            <div class="tabs" style="border-bottom: 1px solid #F1F5F9; padding-bottom: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 0;">
+                                <button class="tab active" style="border:none; background:none; font-weight:700; color:#64748B; cursor:pointer; padding: 0 15px 0 0;">Fast Moving</button>
+                                <span style="color:#CBD5E1; font-weight:300;">|</span>
+                                <button class="tab" style="border:none; background:none; font-weight:700; color:#64748B; cursor:pointer; padding: 0 15px;">Slow Moving</button>
+                                <span style="color:#CBD5E1; font-weight:300;">|</span>
+                                <button class="tab" style="border:none; background:none; font-weight:700; color:#64748B; cursor:pointer; padding: 0 0 0 15px;">Aging Stock</button>
                             </div>
                             <div class="product-list" id="fastMovingProducts">
                                 <!-- Populated dynamically -->
@@ -176,15 +224,15 @@
                             </div>
                             <div class="donut-chart-wrapper">
                                 <div class="donut-text">
-                                    <div class="donut-percent">74%</div>
+                                    <div class="donut-percent">0%</div>
                                     <div class="donut-label">HEALTHY</div>
                                 </div>
                                 <canvas id="stockHealthChart"></canvas>
                             </div>
                             <div class="donut-legend">
-                                <div class="legend-item"><span class="color-box instock"></span> In Stock <span class="val">924</span></div>
-                                <div class="legend-item"><span class="color-box lowstock"></span> Low Stock <span class="val">186</span></div>
-                                <div class="legend-item"><span class="color-box outofstock"></span> Out of Stock <span class="val">138</span></div>
+                                <div class="legend-item"><span class="color-box instock"></span> In Stock <span class="val">0</span></div>
+                                <div class="legend-item"><span class="color-box lowstock"></span> Low Stock <span class="val">0</span></div>
+                                <div class="legend-item"><span class="color-box outofstock"></span> Out of Stock <span class="val">0</span></div>
                             </div>
                         </div>
 
@@ -201,35 +249,10 @@
                         <div class="card orders-card">
                             <div class="card-header">
                                 <h3>Pending Purchase Orders</h3>
-                                <a href="#" class="view-all">View all</a>
+                                <a href="purchase_orders.html" class="view-all">View all</a>
                             </div>
-                            <div class="order-list">
-                                <div class="order-item vertical-border">
-                                    <div class="order-top">
-                                        <span class="order-id blue-text">PO-2027-089</span>
-                                        <span class="badge transit">IN TRANSIT</span>
-                                    </div>
-                                    <div class="order-mid">
-                                        <span>Purchase - 20 Mar 2026</span>
-                                        <span>8 items - Laxis Corp</span>
-                                    </div>
-                                    <div class="order-bottom">
-                                        <strong>Rs. 10,040</strong>
-                                    </div>
-                                </div>
-                                <div class="order-item vertical-border">
-                                    <div class="order-top">
-                                        <span class="order-id blue-text">PO-2027-032</span>
-                                        <span class="badge transit">IN TRANSIT</span>
-                                    </div>
-                                    <div class="order-mid">
-                                        <span>Purchase - 23 Mar 2026</span>
-                                        <span>3 items - TechSupply Inc</span>
-                                    </div>
-                                    <div class="order-bottom">
-                                        <strong>Rs. 22,400</strong>
-                                    </div>
-                                </div>
+                            <div class="order-list" id="dashboardPurchaseOrders">
+                                <!-- Dynamic Orders populated by dashboard_v3.js -->
                             </div>
                         </div>
                     </div>
@@ -244,9 +267,9 @@
                             <span class="subtitle">Items requiring immediate attention</span>
                         </div>
                         <div class="header-right-actions">
-                            <span class="top-badge warning-badge">5 LOW STOCK</span>
-                            <span class="top-badge danger-badge">2 OUT OF STOCK</span>
-                            <button class="outline-btn">View Inventory</button>
+                            <span class="top-badge">0 LOW STOCK</span>
+                            <span class="top-badge">0 OUT OF STOCK</span>
+                            <button class="outline-btn" onclick="window.location.href='inventory.html'">View Inventory</button>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -271,6 +294,7 @@
         </main>
     </div>
     
+    <script src="header.js"></script>
     <script src="dashboard_v3.js"></script>
 </body>
 </html>
