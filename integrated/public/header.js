@@ -51,12 +51,44 @@ document.addEventListener('DOMContentLoaded', () => {
             el.textContent = initials;
         });
 
-        // Update ALL sidebar bottom user names
+        // Update ALL sidebar bottom user names and roles
         document.querySelectorAll('.user-bottom-info strong').forEach(el => {
             el.textContent = displayName;
         });
 
-        // Update profile header card name if on profile page
+        // --- Multi-Tenant Role-Based UI Adjustments ---
+        const orgType = user.org_type || 'Warehouse';
+        
+        // Update role text in sidebar and header
+        document.querySelectorAll('.user-info-text small, .user-bottom-info span').forEach(el => {
+            el.textContent = `${orgType} Admin`;
+        });
+
+        // Adjust sidebar and dashboard elements for Non-Warehouse (e.g., Retailer)
+        if (orgType !== 'Warehouse') {
+            const menuLinks = document.querySelectorAll('.sidebar-menu a');
+            menuLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === 'logistics.html') {
+                    // Hide logistics for retailers/other orgs
+                    link.parentElement.style.display = 'none';
+                }
+                if (href === 'inventory.html') {
+                    link.innerHTML = '<i class="fas fa-store"></i> Store Stock';
+                }
+                if (href === 'sales_orders.html') {
+                    link.innerHTML = '<i class="fas fa-cash-register"></i> POS / Sales';
+                }
+            });
+            
+            // Adjust dashboard specific titles if they exist on the current page
+            const chartCardHeader = document.querySelector('.chart-card h3');
+            if (chartCardHeader) chartCardHeader.textContent = 'Store Revenue Overview';
+            
+            const pOrderCardHeader = document.querySelector('#dashboardPurchaseOrders')?.parentElement?.querySelector('h3');
+            if (pOrderCardHeader) pOrderCardHeader.textContent = 'Orders to Warehouse';
+        }
+        // ----------------------------------------------
         const profileHeaderName = document.querySelector('.name-status h2');
         if (profileHeaderName) profileHeaderName.textContent = displayName;
 

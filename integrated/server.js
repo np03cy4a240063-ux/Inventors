@@ -56,6 +56,30 @@ db.getConnection((err, connection) => {
     }
     console.log('--- DATABASE POOL INITIALIZED ---');
     console.log('Connected to: reinvent_db_v2');
+    
+    // Auto-migrate tables for multi-tenancy (Safe for friends pulling from github)
+    const tables = ['products', 'sales_orders', 'purchase_orders'];
+    tables.forEach(table => {
+        connection.query(`SHOW COLUMNS FROM ${table} LIKE 'user_email'`, (e, r) => {
+            if (!e && r.length === 0) {
+                connection.query(`ALTER TABLE ${table} ADD COLUMN user_email VARCHAR(100) DEFAULT 'Admin123@gmail.com'`, () => {
+                    console.log(`Auto-migrated ${table}: added user_email column for multi-tenancy`);
+                });
+            }
+        });
+    });
+
+    // Auto-migrate missing columns for products table
+    connection.query(`SHOW COLUMNS FROM products LIKE 'image_url'`, (e, r) => {
+        if (!e && r.length === 0) connection.query(`ALTER TABLE products ADD COLUMN image_url TEXT`, () => {});
+    });
+    connection.query(`SHOW COLUMNS FROM products LIKE 'brand'`, (e, r) => {
+        if (!e && r.length === 0) connection.query(`ALTER TABLE products ADD COLUMN brand VARCHAR(100)`, () => {});
+    });
+    connection.query(`SHOW COLUMNS FROM products LIKE 'unit'`, (e, r) => {
+        if (!e && r.length === 0) connection.query(`ALTER TABLE products ADD COLUMN unit VARCHAR(50)`, () => {});
+    });
+
     connection.release();
 });
 
@@ -73,16 +97,120 @@ const validateEmail = (email) => {
       );
 };
 
-// Registration Endpoint
+// Temporary store for signup OTPs (In-memory for demonstration/school project purposes)
+const pendingSignups = {};
+
+// Send Signup OTP Endpoint
+app.post('/api/send-signup-otp', async (req, res) => {
+    const { firstName, lastName, email, company, orgType, password } = req.body;
+    if (!email || !password || !firstName || !lastName) return res.status(400).json({ error: 'Missing fields' });
+    if (!validateEmail(email)) return res.status(400).json({ error: 'Invalid email format' });
+
+    // Check if email already exists
+    db.query('SELECT id FROM users WHERE email = ?', [email], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database check failed' });
+        if (results.length > 0) return res.status(400).json({ error: 'Email already exists' });
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiry = Date.now() + 10 * 60 * 1000; // 10 mins
+        
+        pendingSignups[email] = {
+            otp, expiry,
+            data: { firstName, lastName, email, company, orgType: orgType || 'Warehouse', password }
+        };
+
+        const mailOptions = {
+            from: `"ReInvent Support" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'ReInvent Signup OTP Verification',
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                    <h2 style="color: #6366F1;">Verify Your Account</h2>
+                    <p>Welcome to ReInvent! Use the code below to complete your registration. This code expires in 10 minutes.</p>
+                    <div style="background: #F3F4F6; padding: 15px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 5px; text-align: center; color: #1E293B;">
+                        ${otp}
+                    </div>
+                </div>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Mail Error:', error);
+                return res.status(500).json({ error: 'Failed to send OTP email. Check mailer config.' });
+            }
+            res.json({ message: 'OTP sent to your email' });
+        });
+    });
+});
+
+// Resend Signup OTP Endpoint
+app.post('/api/resend-signup-otp', (req, res) => {
+    const { email } = req.body;
+    if (!pendingSignups[email]) return res.status(400).json({ error: 'No pending signup session found. Please fill the form again.' });
+    
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    pendingSignups[email].otp = otp;
+    pendingSignups[email].expiry = Date.now() + 10 * 60 * 1000;
+    
+    const mailOptions = {
+        from: `"ReInvent Support" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: 'ReInvent Signup OTP Verification (Resent)',
+        html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h2 style="color: #6366F1;">Verify Your Account</h2>
+                <p>Your new verification code is below. It expires in 10 minutes.</p>
+                <div style="background: #F3F4F6; padding: 15px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 5px; text-align: center; color: #1E293B;">
+                    ${otp}
+                </div>
+            </div>
+        `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) return res.status(500).json({ error: 'Failed to resend OTP.' });
+        res.json({ message: 'New OTP sent' });
+    });
+});
+
+// Verify Signup OTP & Create Account Endpoint
+app.post('/api/verify-signup-otp', async (req, res) => {
+    const { email, otp } = req.body;
+    const session = pendingSignups[email];
+
+    if (!session) return res.status(400).json({ error: 'Session expired or not found. Please sign up again.' });
+    if (session.otp !== otp) return res.status(400).json({ error: 'Invalid OTP' });
+    if (Date.now() > session.expiry) return res.status(400).json({ error: 'OTP has expired' });
+
+    try {
+        const { firstName, lastName, company, orgType, password } = session.data;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        const sql = 'INSERT INTO users (first_name, last_name, email, company, org_type, password) VALUES (?, ?, ?, ?, ?, ?)';
+        db.query(sql, [firstName, lastName, email, company, orgType, hashedPassword], (err, result) => {
+            if (err) {
+                if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Email already exists' });
+                return res.status(500).json({ error: 'Registration failed: Database error' });
+            }
+            delete pendingSignups[email]; // clear session
+            res.status(201).json({ message: 'User registered successfully' });
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Encryption error' });
+    }
+});
+
+// Direct Registration Endpoint (Bypassing OTP, optional)
 app.post('/api/register', async (req, res) => {
-    const { firstName, lastName, email, company, password } = req.body;
+    const { firstName, lastName, email, company, orgType, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
     if (!validateEmail(email)) return res.status(400).json({ error: 'Invalid email format' });
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const sql = 'INSERT INTO users (first_name, last_name, email, company, password) VALUES (?, ?, ?, ?, ?)';
-        db.query(sql, [firstName, lastName, email, company, hashedPassword], (err, result) => {
+        const sql = 'INSERT INTO users (first_name, last_name, email, company, org_type, password) VALUES (?, ?, ?, ?, ?, ?)';
+        db.query(sql, [firstName, lastName, email, company, orgType || 'Warehouse', hashedPassword], (err, result) => {
             if (err) {
                 if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Email already exists' });
                 return res.status(500).json({ error: 'Registration failed: Database error' });
@@ -111,6 +239,7 @@ app.post('/api/login', (req, res) => {
                     lastName: results[0].last_name,
                     name: `${results[0].first_name} ${results[0].last_name}`.trim(),
                     company: results[0].company || '',
+                    org_type: results[0].org_type || 'Warehouse',
                     createdAt: results[0].created_at
                 } 
             });
@@ -259,14 +388,16 @@ app.get('/api/analytics', (req, res) => {
 
 // --- INVENTORY API ---
 app.get('/api/products', (req, res) => {
-    const sql = 'SELECT * FROM products ORDER BY created_at DESC';
-    db.query(sql, (err, results) => {
+    const userEmail = req.headers['x-user-email'] || 'Admin123@gmail.com';
+    const sql = 'SELECT * FROM products WHERE user_email = ? ORDER BY created_at DESC';
+    db.query(sql, [userEmail], (err, results) => {
         if (err) return res.status(500).json({ error: 'DB Error' });
         res.json(results);
     });
 });
 
 app.post('/api/products', (req, res) => {
+    const userEmail = req.headers['x-user-email'] || 'Admin123@gmail.com';
     let { name, sku, desc, category, cost, sell, stock, min, image_url, brand, unit } = req.body;
     
     cost = cost !== '' && cost !== undefined ? parseFloat(cost) : 0;
@@ -274,8 +405,8 @@ app.post('/api/products', (req, res) => {
     stock = stock !== '' && stock !== undefined ? parseInt(stock, 10) : 0;
     min = min !== '' && min !== undefined ? parseInt(min, 10) : 0;
 
-    const sql = 'INSERT INTO products (name, sku, `desc`, category, cost, sell, stock, min, image_url, brand, unit) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    db.query(sql, [name, sku, desc, category, cost, sell, stock, min, image_url || null, brand || null, unit || null], (err, result) => {
+    const sql = 'INSERT INTO products (name, sku, `desc`, category, cost, sell, stock, min, image_url, brand, unit, user_email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    db.query(sql, [name, sku, desc, category, cost, sell, stock, min, image_url || null, brand || null, unit || null, userEmail], (err, result) => {
         if (err) {
             console.error('DB Insert Error:', err);
             return res.status(500).json({ error: 'Database error: ' + err.message });
@@ -365,13 +496,15 @@ app.delete('/api/products/:id', (req, res) => {
 
 // --- SALES ORDERS API ---
 app.get('/api/sales_orders', (req, res) => {
-    db.query('SELECT * FROM sales_orders ORDER BY date DESC', (err, results) => {
+    const userEmail = req.headers['x-user-email'] || 'Admin123@gmail.com';
+    db.query('SELECT * FROM sales_orders WHERE user_email = ? ORDER BY date DESC', [userEmail], (err, results) => {
         if (err) return res.status(500).json({ error: 'DB Error' });
         res.json(results);
     });
 });
 
 app.post('/api/sales_orders', (req, res) => {
+    const userEmail = req.headers['x-user-email'] || 'Admin123@gmail.com';
     const { order_id, date, customer, items, total, status } = req.body;
 
     db.getConnection((err, conn) => {
@@ -383,8 +516,8 @@ app.post('/api/sales_orders', (req, res) => {
                 return res.status(500).json({ error: 'Transaction failed' });
             }
 
-            const sqlOrder = 'INSERT INTO sales_orders (order_id, date, customer, items_count, total, status) VALUES (?, ?, ?, ?, ?, ?)';
-            conn.query(sqlOrder, [order_id, date, customer, items.length, total, status || 'PENDING'], (err, result) => {
+            const sqlOrder = 'INSERT INTO sales_orders (order_id, date, customer, items_count, total, status, user_email) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            conn.query(sqlOrder, [order_id, date, customer, items.length, total, status || 'PENDING', userEmail], (err, result) => {
                 if (err) {
                     return conn.rollback(() => {
                         conn.release();
@@ -485,13 +618,15 @@ app.post('/api/sales_orders/sync', (req, res) => {
 
 // --- PURCHASE ORDERS API ---
 app.get('/api/purchase_orders', (req, res) => {
-    db.query('SELECT * FROM purchase_orders ORDER BY date DESC', (err, results) => {
+    const userEmail = req.headers['x-user-email'] || 'Admin123@gmail.com';
+    db.query('SELECT * FROM purchase_orders WHERE user_email = ? ORDER BY date DESC', [userEmail], (err, results) => {
         if (err) return res.status(500).json({ error: 'DB Error' });
         res.json(results);
     });
 });
 
 app.post('/api/purchase_orders', (req, res) => {
+    const userEmail = req.headers['x-user-email'] || 'Admin123@gmail.com';
     const { order_id, date, supplier, items, total, status } = req.body;
 
     db.getConnection((err, conn) => {
@@ -503,8 +638,8 @@ app.post('/api/purchase_orders', (req, res) => {
                 return res.status(500).json({ error: 'Transaction failed' });
             }
 
-            const sqlOrder = 'INSERT INTO purchase_orders (order_id, date, supplier, items_count, total, status) VALUES (?, ?, ?, ?, ?, ?)';
-            conn.query(sqlOrder, [order_id, date, supplier, items.length, total, status || 'PENDING'], (err, result) => {
+            const sqlOrder = 'INSERT INTO purchase_orders (order_id, date, supplier, items_count, total, status, user_email) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            conn.query(sqlOrder, [order_id, date, supplier, items.length, total, status || 'PENDING', userEmail], (err, result) => {
                 if (err) {
                     console.error('PO Header Insert Error:', err);
                     return conn.rollback(() => {
