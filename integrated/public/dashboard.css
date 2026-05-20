@@ -43,8 +43,9 @@ body.dashboard-body {
     height: 100vh;
     left: 0;
     top: 0;
-    overflow-y: auto;
     z-index: 100;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar-brand {
@@ -53,6 +54,7 @@ body.dashboard-body {
     align-items: center;
     gap: 15px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
 }
 
 .sidebar-brand-icon {
@@ -76,7 +78,9 @@ body.dashboard-body {
 }
 
 .sidebar-menu {
-    padding: 20px 0;
+    padding: 20px 0 20px 0;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .menu-section {
@@ -742,41 +746,55 @@ body.dashboard-body {
 .status-badge.buy-stock { background: #FDEBD0; color: #D35400; border: 1px solid #F5CBA7; cursor: pointer; }
 /* --- Sidebar Footer --- */
 .sidebar-user-bottom {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+    width: calc(100% - 30px);
+    margin: 0 15px 15px 15px;
     padding: 15px 20px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
+    transition: 0.3s;
+    flex-shrink: 0;
 }
 
 .user-bottom-info {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
+    flex: 1;
 }
 
-.user-bottom-info i {
+.user-bottom-info .fa-user-circle {
     font-size: 1.8rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: #94A3B8;
+    flex-shrink: 0;
 }
 
 .u-text {
     display: flex;
     flex-direction: column;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .u-text strong {
     font-size: 0.9rem;
-    display: block;
+    font-weight: 700;
+    color: #F8FAFC;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .u-text span {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    color: #94A3B8;
+    margin-top: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .sidebar-user-bottom .fa-cog {

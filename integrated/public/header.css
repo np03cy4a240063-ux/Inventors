@@ -124,6 +124,7 @@
     display: flex !important;
     flex-direction: column !important;
     text-align: left !important;
+    white-space: nowrap !important;
 }
 
 .user-info-text span {

@@ -46,10 +46,32 @@ document.addEventListener('DOMContentLoaded', () => {
             el.textContent = displayName;
         });
 
-        // Update ALL avatar elements with initials
-        document.querySelectorAll('.user-avatar').forEach(el => {
-            el.textContent = initials;
-        });
+        // Apply Profile Photo globally if available
+        if (user.profile_photo) {
+            const imgHtml = `<img src="${user.profile_photo}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            
+            // Top right avatars
+            document.querySelectorAll('.user-avatar').forEach(el => {
+                el.innerHTML = imgHtml;
+                el.style.background = 'transparent';
+            });
+            
+            // Sidebar avatars
+            document.querySelectorAll('.user-bottom-info .fa-user-circle').forEach(el => {
+                const imgContainer = document.createElement('div');
+                imgContainer.style.width = '35px';
+                imgContainer.style.height = '35px';
+                imgContainer.style.borderRadius = '50%';
+                imgContainer.style.flexShrink = '0';
+                imgContainer.innerHTML = imgHtml;
+                el.parentNode.replaceChild(imgContainer, el);
+            });
+        } else {
+            // Fallback to initials if no photo
+            document.querySelectorAll('.user-avatar').forEach(el => {
+                if (!el.querySelector('img')) el.textContent = initials;
+            });
+        }
 
         // Update ALL sidebar bottom user names and roles
         document.querySelectorAll('.user-bottom-info strong').forEach(el => {
@@ -186,19 +208,44 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6. Fetch Alerts from Server
     async function fetchAlerts() {
         try {
+            let userEmail = '';
+            try {
+                const u = JSON.parse(localStorage.getItem('user'));
+                if (u && u.email) userEmail = u.email;
+            } catch(e) {}
+            
             const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
-            const resp = await fetch(`${API_BASE}/api/alerts`);
+            const resp = await fetch(`${API_BASE}/api/alerts?email=${encodeURIComponent(userEmail)}&t=${Date.now()}`);
             if (resp.ok) {
                 const alerts = await resp.json();
                 const list = document.getElementById('notifList');
                 if (list) {
                     list.innerHTML = '';
-                    const unreadAlerts = alerts.filter(a => !a.is_read);
+                    let prefs = {};
+                    try {
+                        const raw = localStorage.getItem('reinvent_profile_data');
+                        if (raw) prefs = JSON.parse(raw);
+                    } catch(e) {}
+
+                    const unreadAlerts = alerts.filter(a => !a.is_read).filter(a => {
+                        // Check DB preferences
+                        if (a.type === 'LOW_STOCK' && prefs.notif_low_stock === 0) {
+                            return false;
+                        }
+                        if (a.type === 'ORDER_UPDATE' && prefs.notif_order_updates === 0) {
+                            return false;
+                        }
+                        if (a.type === 'AGING_STOCK' && prefs.notif_aging_stock === 0) {
+                            return false;
+                        }
+                        return true;
+                    });
+                    
                     if (unreadAlerts.length === 0) {
                         list.innerHTML = '<div style="padding: 20px; text-align: center; color: #94A3B8;">No new notifications</div>';
                     }
                     unreadAlerts.forEach(alert => {
-                        addNotification(alert.id, alert.message, new Date(alert.created_at).toLocaleTimeString(), alert.type === 'LOW_STOCK' ? 'red' : 'blue', false);
+                        addNotification(alert.id, alert.message, timeAgo(alert.created_at), alert.type === 'LOW_STOCK' ? 'red' : 'blue', false);
                     });
                     
                     const dot = document.querySelector('.header-btn .dot');
@@ -210,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchAlerts();
     setInterval(fetchAlerts, 60000); // Check every minute
+    window.addEventListener('notifPrefsChanged', fetchAlerts);
 
     // Mark all as read
     const markAllRead = document.querySelector('.notif-header a');
@@ -218,12 +266,45 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
             try {
-                await fetch(`${API_BASE}/api/alerts/read`, { method: 'POST' });
+                let userEmail = '';
+                try {
+                    const u = JSON.parse(localStorage.getItem('user'));
+                    if (u && u.email) userEmail = u.email;
+                } catch(e) {}
+                
+                await fetch(`${API_BASE}/api/alerts/read`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail })
+                });
                 fetchAlerts();
             } catch(err) { console.error(err); }
         });
     }
 });
+
+// Helper to calculate relative time
+function timeAgo(dateString) {
+    const date = new Date(dateString);
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    if (seconds < 60) return "just now";
+    
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+    
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days} day${days !== 1 ? 's' : ''} ago`;
+    
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months} month${months !== 1 ? 's' : ''} ago`;
+    
+    const years = Math.floor(days / 365);
+    return `${years} year${years !== 1 ? 's' : ''} ago`;
+}
 
 // Helper to add notification
 function addNotification(id, title, time, type = 'blue', showDot = true) {

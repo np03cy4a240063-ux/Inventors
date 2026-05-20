@@ -15,27 +15,7 @@
     --status-confirm: #F97316;
 }
 
-/* Sidebar Overrides for Logistics */
-.sidebar {
-    background-color: var(--logistics-sidebar-bg);
-}
 
-.menu-section ul li.active a {
-    background-color: rgba(255, 255, 255, 0.15);
-    color: white;
-    border-left: none;
-    border-radius: 12px;
-    margin: 0 15px;
-    padding-left: 20px;
-}
-
-.sidebar-user-bottom {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    margin: 15px;
-    width: calc(100% - 30px);
-    bottom: 10px;
-}
 
 /* Top Header Actions */
 .btn-new-order {

@@ -425,27 +425,36 @@ app.put('/api/products/:id', (req, res) => {
     const { id } = req.params;
     let { name, sku, desc, category, cost, sell, stock, min, image_url, brand, unit } = req.body;
 
-    // Build query dynamically or handle both cases (image provided vs not)
+    const checkAlert = () => {
+        if (Number(stock) <= Number(min)) {
+            const alertMsg = `Low stock alert (Product Edited): ${name} is down to ${stock} units (min: ${min}).`;
+            db.query('SELECT user_email FROM products WHERE id = ?', [id], (err, rows) => {
+                const uEmail = rows && rows.length > 0 ? rows[0].user_email : 'Admin123@gmail.com';
+                db.query('INSERT INTO alerts (type, message, is_read, user_email) VALUES (?, ?, 0, ?)', ['LOW_STOCK', alertMsg, uEmail], (err) => {
+                    if (err) console.error('Alert insert error:', err);
+                });
+            });
+        }
+    };
+
     if (image_url !== undefined && image_url !== null) {
         const sql = 'UPDATE products SET name=?, sku=?, `desc`=?, category=?, cost=?, sell=?, stock=?, min=?, image_url=?, brand=?, unit=? WHERE id=?';
         db.query(sql, [name, sku, desc, category, cost, sell, stock, min, image_url, brand, unit, id], (err) => {
-            if (err) {
-                console.error('Update Error:', err);
-                return res.status(500).json({ error: 'DB Error while updating' });
-            }
-            db.query('INSERT INTO product_logs (product_id, action, details) VALUES (?, ?, ?)', 
-                [id, 'EDITED', `Product ${name} updated (with new image)`]);
+            if (err) return res.status(500).json({ error: 'DB Error' });
+            db.query('INSERT INTO product_logs (product_id, action, details) VALUES (?, ?, ?)', [id, 'EDITED', `Product ${name} updated (with image)`], (err) => {
+                if (err) console.error('Log error:', err);
+            });
+            checkAlert();
             res.json({ message: 'Product updated' });
         });
     } else {
         const sql = 'UPDATE products SET name=?, sku=?, `desc`=?, category=?, cost=?, sell=?, stock=?, min=?, brand=?, unit=? WHERE id=?';
         db.query(sql, [name, sku, desc, category, cost, sell, stock, min, brand, unit, id], (err) => {
-            if (err) {
-                console.error('Update Error:', err);
-                return res.status(500).json({ error: 'DB Error while updating' });
-            }
-            db.query('INSERT INTO product_logs (product_id, action, details) VALUES (?, ?, ?)', 
-                [id, 'EDITED', `Product ${name} updated`]);
+            if (err) return res.status(500).json({ error: 'DB Error' });
+            db.query('INSERT INTO product_logs (product_id, action, details) VALUES (?, ?, ?)', [id, 'EDITED', `Product ${name} updated`], (err) => {
+                if (err) console.error('Log error:', err);
+            });
+            checkAlert();
             res.json({ message: 'Product updated' });
         });
     }
@@ -585,6 +594,9 @@ app.post('/api/sales_orders', (req, res) => {
                         conn.query('INSERT INTO audit_logs (action_type, entity_id, details) VALUES (?, ?, ?)',
                             ['SALES', order_id, `Sales Order created with ${items.length} items for ${customer}`]);
                         
+                        // Alert Notification
+                        conn.query("INSERT INTO alerts (type, message) VALUES (?, ?)", ['ORDER_UPDATE', `New Sales Order ${order_id} created for ${customer}.`]);
+                        
                         conn.release();
                         res.status(201).json({ message: 'Sales Order created successfully', id: orderDbId });
                     });
@@ -607,6 +619,7 @@ app.post('/api/sales_orders/sync', (req, res) => {
             // In a real app, you'd match items. Here we just simulate reducing total stock 
             // of a random product for demo purposes, or better, just mark as completed.
             db.query("UPDATE sales_orders SET status = 'COMPLETED' WHERE id = ?", [order.id], () => {
+                db.query("INSERT INTO alerts (type, message) VALUES (?, ?)", ['ORDER_UPDATE', `Sales Order ${order.order_id} has been COMPLETED.`]);
                 processed++;
                 if (processed === orders.length) {
                     res.json({ message: `Synced ${processed} orders. Stock updated.` });
@@ -754,19 +767,29 @@ app.post('/api/stock_adjustments', (req, res) => {
 });
 
 // --- ALERTS API ---
+app.get('/api/test-alert', (req, res) => {
+    db.query('INSERT INTO alerts (type, message, is_read) VALUES (?, ?, 0)', ['LOW_STOCK', 'Low stock alert (System Triggered): Test1 is down to 5 units (min: 10).'], (err, result) => {
+        if (err) return res.json({ success: false, error: err.message });
+        res.json({ success: true, insertId: result.insertId });
+    });
+});
+
 app.get('/api/alerts', (req, res) => {
-    db.query('SELECT * FROM alerts ORDER BY created_at DESC LIMIT 20', (err, results) => {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ error: 'Email required' });
+    db.query('SELECT * FROM alerts WHERE user_email = ? ORDER BY created_at DESC LIMIT 20', [email], (err, results) => {
         if (err) return res.status(500).json({ error: 'DB Error' });
         res.json(results);
     });
 });
 
 app.post('/api/alerts/read', (req, res) => {
-    db.query('UPDATE alerts SET is_read = TRUE', (err) => {
+    const { email } = req.body;
+    db.query('UPDATE alerts SET is_read = TRUE WHERE user_email = ?', [email], (err) => {
         if (err) return res.status(500).json({ error: 'DB Error' });
         
         db.query('INSERT INTO audit_logs (action_type, details) VALUES (?, ?)',
-            ['ALERT_ACKNOWLEDGED', 'All alerts marked as read']);
+            ['ALERT_ACKNOWLEDGED', `All alerts marked as read for ${email}`]);
             
         res.json({ message: 'Alerts marked as read' });
     });
@@ -838,7 +861,7 @@ app.get('/api/profile', (req, res) => {
     const { email } = req.query;
     if (!email) return res.status(400).json({ error: 'Email required' });
     
-    const sql = 'SELECT first_name, last_name, email, company, phone, created_at FROM users WHERE email = ?';
+    const sql = 'SELECT first_name, last_name, email, company, phone, profile_photo, notif_low_stock, notif_order_updates, notif_aging_stock, created_at FROM users WHERE email = ?';
     db.query(sql, [email], (err, results) => {
         if (err || results.length === 0) return res.status(404).json({ error: 'User not found' });
         res.json(results[0]);
@@ -846,12 +869,26 @@ app.get('/api/profile', (req, res) => {
 });
 
 app.post('/api/profile', (req, res) => {
-    const { firstName, lastName, email, company, phone } = req.body;
+    console.log('--- PROFILE SAVE INCOMING PAYLOAD ---', req.body);
+    const { firstName, lastName, email, company, phone, profile_photo, notif_low_stock, notif_order_updates, notif_aging_stock } = req.body;
     if (!email) return res.status(400).json({ error: 'Email required' });
 
-    const sql = 'UPDATE users SET first_name = ?, last_name = ?, company = ?, phone = ? WHERE email = ?';
-    db.query(sql, [firstName, lastName, company, phone || null, email], (err, result) => {
-        if (err) return res.status(500).json({ error: 'DB Error' });
+    const sql = 'UPDATE users SET first_name = ?, last_name = ?, company = ?, phone = ?, profile_photo = ?, notif_low_stock = COALESCE(?, notif_low_stock), notif_order_updates = COALESCE(?, notif_order_updates), notif_aging_stock = COALESCE(?, notif_aging_stock) WHERE email = ?';
+    db.query(sql, [
+        firstName, 
+        lastName, 
+        company, 
+        phone || null, 
+        profile_photo || null,
+        notif_low_stock !== undefined ? notif_low_stock : null,
+        notif_order_updates !== undefined ? notif_order_updates : null,
+        notif_aging_stock !== undefined ? notif_aging_stock : null,
+        email
+    ], (err, result) => {
+        if (err) {
+            console.error('PROFILE SAVE DB ERROR:', err);
+            return res.status(500).json({ error: `DB Error: ${err.message}` });
+        }
         res.json({ message: 'Profile updated' });
     });
 });

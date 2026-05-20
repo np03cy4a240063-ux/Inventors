@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    let currentProfilePhoto = null;
+
     function updateUIWithData(data) {
         const fN = document.getElementById('profileFirstName');
         const lN = document.getElementById('profileLastName');
@@ -19,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (em && data.email) em.value = data.email;
         if (ph && data.phone) ph.value = data.phone;
         if (co && data.company) co.value = data.company;
+
+        currentProfilePhoto = data.profile_photo || null;
 
         // Update header tags
         const hName = document.querySelector('.name-status h2');
@@ -35,15 +39,44 @@ document.addEventListener('DOMContentLoaded', () => {
             const d = new Date(data.created_at);
             memberSince.innerHTML = `Member since ${d.toLocaleString('default', {month:'short'})} ${d.getFullYear()}`;
         }
+
+        if (currentProfilePhoto) {
+            const avatarLg = document.querySelector('.profile-avatar-large');
+            if (avatarLg) {
+                avatarLg.innerHTML = `<img src="${currentProfilePhoto}" alt="Profile Photo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            }
+            document.querySelectorAll('.user-avatar').forEach(el => {
+                el.innerHTML = `<img src="${currentProfilePhoto}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            });
+        }
+
+        const lowStockToggle = document.querySelector('.toggle-switch[data-pref="lowStock"]');
+        if (lowStockToggle && data.notif_low_stock !== undefined) {
+            if (Number(data.notif_low_stock) === 1) lowStockToggle.classList.add('active'); else lowStockToggle.classList.remove('active');
+        }
+        const orderToggle = document.querySelector('.toggle-switch[data-pref="orderUpdates"]');
+        if (orderToggle && data.notif_order_updates !== undefined) {
+            if (Number(data.notif_order_updates) === 1) orderToggle.classList.add('active'); else orderToggle.classList.remove('active');
+        }
+        const agingToggle = document.querySelector('.toggle-switch[data-pref="agingStock"]');
+        if (agingToggle && data.notif_aging_stock !== undefined) {
+            if (Number(data.notif_aging_stock) === 1) agingToggle.classList.add('active'); else agingToggle.classList.remove('active');
+        }
     }
 
     async function loadProfile() {
         try {
-            const resp = await fetch(`${API_BASE}/api/profile?email=${encodeURIComponent(user.email)}`);
+            const resp = await fetch(`${API_BASE}/api/profile?email=${encodeURIComponent(user.email)}&t=${Date.now()}`);
             if (resp.ok) {
                 const data = await resp.json();
                 updateUIWithData(data);
                 localStorage.setItem('reinvent_profile_data', JSON.stringify(data));
+                
+                // Keep local storage header user in sync immediately
+                user.name = `${data.first_name || ''} ${data.last_name || ''}`.trim() || user.name;
+                user.profile_photo = data.profile_photo || null;
+                localStorage.setItem('user', JSON.stringify(user));
+                document.querySelectorAll('.user-info-text span').forEach(el => el.textContent = user.name || 'User');
             }
         } catch (err) {
             console.warn('Profile fetch failed', err);
@@ -89,7 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastName: document.getElementById('profileLastName').value,
                 email: user.email,
                 phone: document.getElementById('profilePhone').value,
-                company: document.getElementById('profileCompany').value
+                company: document.getElementById('profileCompany').value,
+                profile_photo: currentProfilePhoto,
+                notif_low_stock: document.querySelector('.toggle-switch[data-pref="lowStock"]')?.classList.contains('active') ? 1 : 0,
+                notif_order_updates: document.querySelector('.toggle-switch[data-pref="orderUpdates"]')?.classList.contains('active') ? 1 : 0,
+                notif_aging_stock: document.querySelector('.toggle-switch[data-pref="agingStock"]')?.classList.contains('active') ? 1 : 0
             };
 
             try {
@@ -183,16 +220,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // Notification Prefs
     const toggles = document.querySelectorAll('.toggle-switch');
     toggles.forEach(toggle => {
-        const prefKey = `notif_pref_${user.email}_${toggle.dataset.pref}`;
-        if (localStorage.getItem(prefKey) === 'false') {
-            toggle.classList.remove('active');
-        }
         toggle.addEventListener('click', () => {
             toggle.classList.toggle('active');
-            localStorage.setItem(prefKey, toggle.classList.contains('active'));
-            showToast('Preferences updated', 'success');
+            showToast('Preference changed. Click Save Changes to apply.', 'success');
         });
     });
+
+    // Profile Photo Change
+    const changePhotoBtn = document.getElementById('changePhotoBtn');
+    const photoInput = document.getElementById('profilePhotoInput');
+    if (changePhotoBtn && photoInput) {
+        changePhotoBtn.addEventListener('click', () => photoInput.click());
+        photoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                return showToast('Image size should be less than 2MB', 'error');
+            }
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                currentProfilePhoto = ev.target.result;
+                const avatarLg = document.querySelector('.profile-avatar-large');
+                if (avatarLg) {
+                    avatarLg.innerHTML = `<img src="${currentProfilePhoto}" alt="Profile Photo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                }
+                showToast('Photo selected! Remember to Save Changes.', 'success');
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 
     // Password Visibility Toggle
     document.querySelectorAll('.toggle-pass-vis').forEach(eye => {
