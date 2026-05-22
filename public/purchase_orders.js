@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+    const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
     let products = [];
     let cart = []; // { id, name, qty, cost, supplier }
 
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startOrderBtn.addEventListener('click', () => {
         const supplier = supplierSelect.value;
-        if (!supplier) return alert('Please select a supplier first.');
+        if (!supplier) return showToast('Please select a supplier first.', 'error');
 
         selectedSupplierName.textContent = supplier;
         step1.style.display = 'none';
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const qty = Number(document.getElementById('mQty').value);
         const cost = Number(document.getElementById('mCost').value);
         
-        if (!id) return alert('Please select a product');
+        if (!id) return showToast('Please select a product', 'error');
         
         addToCart(id, name, qty, cost, supplier);
         addManualItemForm.reset();
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Submit Purchase Order
     document.getElementById('createPoBtn').addEventListener('click', async () => {
-        if (cart.length === 0) return alert('Please add items to purchase order.');
+        if (cart.length === 0) return showToast('Please add items to purchase order.', 'error');
 
         const btn = document.getElementById('createPoBtn');
         btn.textContent = 'Processing...';
@@ -234,15 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (resp.ok) {
-                alert('Purchase Order Created Successfully!');
+                showToast('Purchase Order Created Successfully!', 'success');
                 window.location.href = 'dashboard.html';
             } else {
                 const res = await resp.json();
-                alert('Failed to create Purchase Order: ' + (res.error || 'Unknown error'));
+                showToast('Failed to create Purchase Order: ' + (res.error || 'Unknown error'), 'error');
             }
         } catch (err) {
             console.error('Submit PO error', err);
-            alert('Connection error.');
+            showToast('Connection error.', 'error');
         } finally {
             btn.textContent = 'Create Purchase Order';
             btn.disabled = false;

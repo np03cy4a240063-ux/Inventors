@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="fetch_interceptor.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - ReInvent</title>
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="header.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="auth_check.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dashboard-body">
@@ -201,10 +203,12 @@
                                 <h3>Product Movement</h3>
                                 <a href="inventory.html" class="view-all">View all</a>
                             </div>
-                            <div class="tabs">
-                                <button class="tab active">Fast Moving</button>
-                                <button class="tab">Slow Moving</button>
-                                <button class="tab">Aging Stock</button>
+                            <div class="tabs" style="border-bottom: 1px solid #F1F5F9; padding-bottom: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 0;">
+                                <button class="tab active" style="border:none; background:none; font-weight:700; color:#64748B; cursor:pointer; padding: 0 15px 0 0;">Fast Moving</button>
+                                <span style="color:#CBD5E1; font-weight:300;">|</span>
+                                <button class="tab" style="border:none; background:none; font-weight:700; color:#64748B; cursor:pointer; padding: 0 15px;">Slow Moving</button>
+                                <span style="color:#CBD5E1; font-weight:300;">|</span>
+                                <button class="tab" style="border:none; background:none; font-weight:700; color:#64748B; cursor:pointer; padding: 0 0 0 15px;">Aging Stock</button>
                             </div>
                             <div class="product-list" id="fastMovingProducts">
                                 <!-- Populated dynamically -->

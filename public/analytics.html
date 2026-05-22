@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="fetch_interceptor.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analytics - ReInvent</title>
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="header.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="auth_check.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dashboard-body">
@@ -34,12 +36,19 @@
                         <li class="active"><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="menu-section">
                     <h4>OPERATIONS</h4>
                     <ul>
                         <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
                         <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h4>SETTINGS</h4>
+                    <ul>
+                        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
                     </ul>
                 </div>
             </div>
@@ -229,26 +238,26 @@
                     <div class="ana-mini-card">
                         <div class="mini-icon"><i class="far fa-calendar-alt"></i></div>
                         <span class="label">Avg. Days to Sell</span>
-                        <h3 id="avgDaysSell">18 days</h3>
-                        <span class="sub green-text"><i class="fas fa-caret-down"></i> 3 days faster</span>
+                        <h3 id="avgDaysSell">—</h3>
+                        <span class="sub">Loading...</span>
                     </div>
                     <div class="ana-mini-card">
                         <div class="mini-icon"><i class="fas fa-sync"></i></div>
                         <span class="label">Inventory Turnover</span>
-                        <h3 id="invTurnover">4.2x</h3>
-                        <span class="sub green-text"><i class="fas fa-caret-up"></i> Good rate</span>
+                        <h3 id="invTurnover">—</h3>
+                        <span class="sub">Loading...</span>
                     </div>
                     <div class="ana-mini-card">
                         <div class="mini-icon"><i class="far fa-money-bill-alt"></i></div>
                         <span class="label">Dead Stock Value</span>
-                        <h3 id="deadStockValue" class="red-text">Rs. 2,560</h3>
-                        <span class="sub red-text">86 aging items</span>
+                        <h3 id="deadStockValue" class="red-text">—</h3>
+                        <span class="sub red-text">Loading...</span>
                     </div>
                     <div class="ana-mini-card">
                         <div class="mini-icon"><i class="far fa-envelope"></i></div>
                         <span class="label">Stock Accuracy</span>
-                        <h3 id="stockAccuracy" class="green-text">97.4%</h3>
-                        <span class="sub">Last count: 27 Mar</span>
+                        <h3 id="stockAccuracy" class="green-text">—</h3>
+                        <span class="sub">Loading...</span>
                     </div>
                 </div>
             </div>

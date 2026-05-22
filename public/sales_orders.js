@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+    const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
     let orders = [];
     let products = [];
     const tableBody = document.querySelector('#ordersTable tbody');
@@ -149,14 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (product.stock < qty) {
                 allOk = false;
                 row.style.border = '1px solid red';
-                alert(`Not enough stock for ${product.name}. Available: ${product.stock}`);
+                showToast(`Not enough stock for ${product.name}. Available: ${product.stock}`, 'error');
             } else {
                 row.style.border = 'none';
             }
         });
         
         if (allOk) {
-            alert('Stock check successful!');
+            showToast('Stock check successful!', 'success');
             saveBtn.disabled = false;
         }
     };
@@ -188,16 +188,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (resp.ok) {
                 // Diagram says "Display Confirmation Message"
-                alert('Sales Order created and inventory updated successfully!');
+                showToast('Sales Order created and inventory updated successfully!', 'success');
                 modal.classList.remove('show');
                 fetchOrders();
                 fetchProducts(); // Refresh stock locally
             } else {
                 const res = await resp.json();
-                alert('Error: ' + res.error);
+                showToast('Error: ' + res.error, 'error');
             }
         } catch(err) {
-            alert('Connection error');
+            showToast('Connection error', 'error');
         }
     };
 

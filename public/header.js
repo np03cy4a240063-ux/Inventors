@@ -1,3 +1,30 @@
+// --- Global Toast Notification Utility ---
+window.showToast = function(message, type = 'success') {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = message;
+
+    container.appendChild(toast);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => {
+            toast.remove();
+            if (container.children.length === 0) {
+                container.remove();
+            }
+        }, 400);
+    }, 4000);
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Session & Profile Logic
     const user = JSON.parse(localStorage.getItem('user'));
@@ -89,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localSearch.value = query;
                 localSearch.dispatchEvent(new Event('input'));
             } else {
-                alert('Searching for: ' + query);
+                showToast('Searching for: ' + query, 'success');
             }
         }
     }
@@ -117,37 +144,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 5. Sidebar Settings Gear Icon → Profile
-    const settingsIcon = document.querySelector('.fa-cog');
-    if (settingsIcon) {
-        settingsIcon.style.cursor = 'pointer';
-        settingsIcon.addEventListener('click', () => {
+    const settingsIcons = document.querySelectorAll('.sidebar-user-bottom .fa-cog');
+    settingsIcons.forEach(icon => {
+        icon.style.cursor = 'pointer';
+        icon.addEventListener('click', () => {
             window.location.href = 'profile.html';
         });
-    }
+    });
+
     // 6. Fetch Alerts from Server
     async function fetchAlerts() {
         try {
-            const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+            const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
             const resp = await fetch(`${API_BASE}/api/alerts`);
             if (resp.ok) {
                 const alerts = await resp.json();
                 const list = document.getElementById('notifList');
                 if (list) {
                     list.innerHTML = '';
-                    const unreadAlerts = alerts.filter(a => !a.is_read);
+                    // Respect low stock preference
+                    const notifPrefs = JSON.parse(localStorage.getItem('reinvent_notif_prefs')) || { lowStock: true, orderUpdates: true, agingStock: true };
+                    const showLowStockAlerts = notifPrefs.lowStock !== false;
+                    const filteredAlerts = showLowStockAlerts ? alerts : alerts.filter(a => a.type !== 'LOW_STOCK');
+
+                    const unreadAlerts = filteredAlerts.filter(a => !a.is_read);
                     if (unreadAlerts.length === 0) {
                         list.innerHTML = '<div style="padding: 20px; text-align: center; color: #94A3B8;">No new notifications</div>';
-                    }
-                    unreadAlerts.forEach(alert => {
-                        addNotification(alert.id, alert.message, new Date(alert.created_at).toLocaleTimeString(), alert.type === 'LOW_STOCK' ? 'red' : 'blue', false);
-                    });
-                    
-                    const dot = document.querySelector('.header-btn .dot');
-                    if (dot) dot.style.display = unreadAlerts.length > 0 ? 'block' : 'none';
-                }
-            }
-        } catch(err) { console.error('Alert fetch error', err); }
-    }
+                      }
+                      unreadAlerts.forEach(alert => {
+                          addNotification(alert.id, alert.message, new Date(alert.created_at).toLocaleTimeString(), alert.type === 'LOW_STOCK' ? 'red' : 'blue', false);
+                      });
+                      
+                      const dot = document.querySelector('.header-btn .dot');
+                      if (dot) dot.style.display = unreadAlerts.length > 0 ? 'block' : 'none';
+                  }
+              }
+          } catch(err) { console.error('Alert fetch error', err); }
+      }
 
     fetchAlerts();
     setInterval(fetchAlerts, 60000); // Check every minute
@@ -157,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (markAllRead) {
         markAllRead.addEventListener('click', async (e) => {
             e.preventDefault();
-            const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+            const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
             try {
                 await fetch(`${API_BASE}/api/alerts/read`, { method: 'POST' });
                 fetchAlerts();
@@ -202,7 +235,7 @@ function addNotification(id, title, time, type = 'blue', showDot = true) {
     const ackBtn = item.querySelector('.ack-btn');
     ackBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
-        const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+        const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
         try {
             const resp = await fetch(`${API_BASE}/api/alerts/acknowledge`, {
                 method: 'POST',

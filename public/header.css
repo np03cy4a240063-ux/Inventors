@@ -228,3 +228,236 @@
     font-size: 0.75rem !important;
     color: #94A3B8 !important;
 }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   UNIFIED SIDEBAR — single source of truth for all pages
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Layout shell */
+.dashboard-layout {
+    display: flex !important;
+    min-height: 100vh !important;
+}
+
+/* ── Sidebar wrapper ── */
+.sidebar {
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
+    height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 900 !important;
+    background: #1E293B !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ── Brand / logo area ── */
+.sidebar-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 24px 20px 20px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+    flex-shrink: 0 !important;
+}
+
+.sidebar-brand-icon {
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #fff !important;
+    font-size: 1.1rem !important;
+    flex-shrink: 0 !important;
+}
+
+.sidebar-brand-text h2 {
+    font-size: 1.2rem !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+    margin: 0 !important;
+    line-height: 1.1 !important;
+}
+
+.sidebar-brand-text span {
+    font-size: 0.65rem !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.45) !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+}
+
+/* ── Scrollable nav area ── */
+.sidebar-menu {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 16px 0 8px !important;
+    scrollbar-width: none !important;
+}
+
+.sidebar-menu::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* ── Section headers (MAIN / OPERATIONS / SETTINGS) ── */
+.menu-section {
+    margin-bottom: 4px !important;
+}
+
+.menu-section h4 {
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    color: rgba(255, 255, 255, 0.35) !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    padding: 12px 20px 6px !important;
+    margin: 0 !important;
+}
+
+.menu-section ul {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+}
+
+/* ── Nav items ── */
+.menu-section ul li {
+    margin: 2px 0 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+.menu-section ul li a {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 10px 12px !important;
+    height: 42px !important;
+    box-sizing: border-box !important;
+    border-radius: 10px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: background 0.18s ease, color 0.18s ease !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
+}
+
+.menu-section ul li a i {
+    width: 18px !important;
+    text-align: center !important;
+    font-size: 0.9rem !important;
+    flex-shrink: 0 !important;
+    opacity: 0.75 !important;
+    transition: opacity 0.18s ease !important;
+}
+
+.menu-section ul li a:hover {
+    background: rgba(255, 255, 255, 0.07) !important;
+    color: #fff !important;
+}
+
+.menu-section ul li a:hover i {
+    opacity: 1 !important;
+}
+
+/* ── Active state — highlight only, no size change ── */
+.menu-section ul li.active a {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+}
+
+.menu-section ul li.active a i {
+    opacity: 1 !important;
+}
+
+/* ── User profile card — anchored to bottom ── */
+.sidebar-user-bottom {
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 14px 16px !important;
+    margin: 0 10px 10px !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-sizing: border-box !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    cursor: default !important;
+}
+
+.user-bottom-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    overflow: hidden !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+.user-bottom-info > .fa-user-circle {
+    font-size: 1.6rem !important;
+    color: rgba(255, 255, 255, 0.55) !important;
+    flex-shrink: 0 !important;
+}
+
+.u-text {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    min-width: 0 !important;
+}
+
+.u-text strong {
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.2 !important;
+}
+
+.u-text span {
+    font-size: 0.7rem !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+}
+
+.sidebar-user-bottom > .fa-cog {
+    font-size: 0.9rem !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    transition: color 0.18s ease !important;
+    padding: 4px !important;
+}
+
+.sidebar-user-bottom > .fa-cog:hover {
+    color: #fff !important;
+}
+
+/* ── Push main content right to clear the fixed sidebar ── */
+.main-content {
+    margin-left: 260px !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 100vh !important;
+}

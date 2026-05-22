@@ -29,14 +29,6 @@
     padding-left: 20px;
 }
 
-.sidebar-user-bottom {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    margin: 15px;
-    width: calc(100% - 30px);
-    bottom: 10px;
-}
-
 /* Top Header Actions */
 .btn-new-order {
     padding: 10px 20px;

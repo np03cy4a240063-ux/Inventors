@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="fetch_interceptor.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Export Report - ReInvent</title>
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="header.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="auth_check.js"></script>
     <style>
         .export-page-bg {
             background-color: #F8FAFC;
@@ -339,12 +341,19 @@
                         <li class="active"><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="menu-section">
                     <h4>OPERATIONS</h4>
                     <ul>
                         <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
                         <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h4>SETTINGS</h4>
+                    <ul>
+                        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
                     </ul>
                 </div>
             </div>
@@ -558,32 +567,243 @@
     <script src="header.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const btnCreate = document.getElementById('btnCreate');
-            const configView = document.getElementById('configView');
+            const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
+            const btnCreate   = document.getElementById('btnCreate');
+            const configView  = document.getElementById('configView');
             const successView = document.getElementById('successView');
             const backContainer = document.getElementById('backToAnalyticsContainer');
-            const recipientInput = document.getElementById('exportRecipient');
             const successDateText = document.getElementById('successDateText');
 
-            // Set user email from local storage if available
-            const sessionData = JSON.parse(localStorage.getItem('reinvent_session'));
-            const userEmail = sessionData?.email || 'johndoe@reinvent.io';
-            const userName = sessionData?.name || 'John Doe';
-            recipientInput.value = userEmail;
+            // Pre-fill recipient from session
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const recipientInput = document.getElementById('exportRecipient');
+            if (recipientInput && user.email) recipientInput.value = user.email;
 
-            btnCreate.addEventListener('click', () => {
-                // Formatting current date for the success message
-                const now = new Date();
-                const options = { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
-                const formattedDate = now.toLocaleDateString('en-GB', options).replace(',', '');
-                
-                successDateText.textContent = `Created on ${formattedDate} - by ${userName}`;
-                
-                // Toggle Views
-                configView.style.display = 'none';
-                backContainer.style.display = 'none';
-                successView.style.display = 'block';
+            // Map radio labels to day offsets
+            const dayMap = {
+                'Last 7 days': 7,
+                'Last 30 days': 30,
+                'Last 90 days': 90,
+                'Last 120 days': 120,
+                'Last 180 days': 180
+            };
+
+            function getDateRange() {
+                const checked = document.querySelector('input[name="dateRange"]:checked');
+                const label = checked?.nextElementSibling?.nextElementSibling?.textContent?.trim() || 'Last 30 days';
+                const days = dayMap[label] || 30;
+                const end = new Date();
+                const start = new Date();
+                start.setDate(start.getDate() - days);
+                return {
+                    start: start.toISOString().split('T')[0],
+                    end:   end.toISOString().split('T')[0],
+                    label
+                };
+            }
+
+            btnCreate.addEventListener('click', async () => {
+                btnCreate.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                btnCreate.disabled = true;
+
+                try {
+                    const { start, end, label } = getDateRange();
+
+                    // Fetch all three report types in parallel
+                    const [salesResp, purchaseResp, inventoryResp] = await Promise.all([
+                        fetch(`${API_BASE}/api/reports?type=SALES&start_date=${start}&end_date=${end}`),
+                        fetch(`${API_BASE}/api/reports?type=PURCHASE&start_date=${start}&end_date=${end}`),
+                        fetch(`${API_BASE}/api/reports?type=INVENTORY&start_date=${start}&end_date=${end}`)
+                    ]);
+
+                    const salesData     = salesResp.ok     ? await salesResp.json()     : [];
+                    const purchaseData  = purchaseResp.ok  ? await purchaseResp.json()  : [];
+                    const inventoryData = inventoryResp.ok ? await inventoryResp.json() : [];
+
+                    // Log the export
+                    fetch(`${API_BASE}/api/reports/log`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: 'FULL', format: 'PDF' })
+                    }).catch(() => {});
+
+                    // Increment local reports counter (shown on profile activity card)
+                    const prev = parseInt(localStorage.getItem('reinvent_reports_count') || '0');
+                    localStorage.setItem('reinvent_reports_count', prev + 1);
+
+                    generateAndDownloadPDF({
+                        label, start, end,
+                        user,
+                        salesData,
+                        purchaseData,
+                        inventoryData
+                    });
+
+                    // Show success view
+                    const now = new Date();
+                    const fmt = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                              + ' ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                    successDateText.textContent = `Created on ${fmt} — by ${user.name || user.email || 'User'}`;
+                    configView.style.display = 'none';
+                    backContainer.style.display = 'none';
+                    successView.style.display = 'block';
+
+                } catch (err) {
+                    console.error('Export failed:', err);
+                    alert('Failed to generate report. Make sure the server is running.');
+                } finally {
+                    btnCreate.innerHTML = 'Create Export';
+                    btnCreate.disabled = false;
+                }
             });
+
+            function generateAndDownloadPDF({ label, start, end, user, salesData, purchaseData, inventoryData }) {
+                const userName = user.name || user.email || 'User';
+                const company  = user.company || 'ReInvent';
+                const now      = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+                // Calculate summary totals
+                const totalRevenue  = salesData.reduce((s, r) => s + parseFloat(r.Revenue || 0), 0);
+                const totalCost     = purchaseData.reduce((s, r) => s + parseFloat(r.Cost || 0), 0);
+                const totalStockVal = inventoryData.reduce((s, r) => s + parseFloat(r.TotalValue || 0), 0);
+                const grossProfit   = totalRevenue * 0.3;
+
+                function tableHTML(headers, rows, emptyMsg) {
+                    if (!rows || rows.length === 0) {
+                        return `<p class="empty-msg">${emptyMsg}</p>`;
+                    }
+                    const ths = headers.map(h => `<th>${h}</th>`).join('');
+                    const trs = rows.map(row =>
+                        `<tr>${headers.map(h => `<td>${row[h] ?? '—'}</td>`).join('')}</tr>`
+                    ).join('');
+                    return `<table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+                }
+
+                const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ReInvent Report — ${label}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', Arial, sans-serif; color: #1E293B; background: #fff; font-size: 12px; }
+  .page { padding: 40px 50px; max-width: 900px; margin: 0 auto; }
+
+  /* Header */
+  .report-header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px; border-bottom: 3px solid #1E293B; margin-bottom: 28px; }
+  .brand { font-size: 26px; font-weight: 800; color: #1E293B; letter-spacing: -0.5px; }
+  .brand span { color: #5D7B9D; }
+  .report-meta { text-align: right; }
+  .report-meta h2 { font-size: 18px; font-weight: 700; color: #1E293B; margin-bottom: 4px; }
+  .report-meta p { font-size: 11px; color: #64748B; line-height: 1.6; }
+
+  /* Summary cards */
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
+  .sum-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px 16px; }
+  .sum-card .label { font-size: 10px; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .sum-card .value { font-size: 18px; font-weight: 800; color: #1E293B; }
+  .sum-card .value.green { color: #16A34A; }
+  .sum-card .value.red   { color: #DC2626; }
+
+  /* Section */
+  .section { margin-bottom: 30px; }
+  .section-title { font-size: 13px; font-weight: 700; color: #1E293B; padding: 8px 0; border-bottom: 2px solid #E2E8F0; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .section-title .dot { width: 8px; height: 8px; border-radius: 50%; background: #5D7B9D; display: inline-block; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  thead tr { background: #1E293B; color: #fff; }
+  thead th { padding: 9px 12px; text-align: left; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  tbody tr:nth-child(even) { background: #F8FAFC; }
+  tbody tr:hover { background: #EFF6FF; }
+  tbody td { padding: 8px 12px; border-bottom: 1px solid #F1F5F9; color: #334155; }
+  .empty-msg { color: #94A3B8; font-style: italic; padding: 12px 0; font-size: 11px; }
+
+  /* Footer */
+  .report-footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #E2E8F0; display: flex; justify-content: space-between; font-size: 10px; color: #94A3B8; }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 20px 30px; }
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="report-header">
+    <div>
+      <div class="brand">Re<span>Invent.</span></div>
+      <div style="font-size:11px;color:#64748B;margin-top:4px;">Inventory Management System</div>
+    </div>
+    <div class="report-meta">
+      <h2>Business Report</h2>
+      <p>Period: ${label} (${start} to ${end})<br>
+         Generated: ${now}<br>
+         Prepared for: ${userName} &mdash; ${company}</p>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-grid">
+    <div class="sum-card">
+      <div class="label">Total Revenue</div>
+      <div class="value green">Rs. ${totalRevenue.toLocaleString()}</div>
+    </div>
+    <div class="sum-card">
+      <div class="label">Gross Profit (30%)</div>
+      <div class="value green">Rs. ${grossProfit.toLocaleString()}</div>
+    </div>
+    <div class="sum-card">
+      <div class="label">Purchase Cost</div>
+      <div class="value red">Rs. ${totalCost.toLocaleString()}</div>
+    </div>
+    <div class="sum-card">
+      <div class="label">Stock Value</div>
+      <div class="value">Rs. ${totalStockVal.toLocaleString()}</div>
+    </div>
+  </div>
+
+  <!-- Sales Orders -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Sales Orders (Completed)</div>
+    ${tableHTML(['ID','Date','Customer','Items','Revenue'], salesData, 'No completed sales orders in this period.')}
+  </div>
+
+  <!-- Purchase Orders -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Purchase Orders</div>
+    ${tableHTML(['ID','Date','Supplier','Items','Cost'], purchaseData, 'No purchase orders in this period.')}
+  </div>
+
+  <!-- Inventory Snapshot -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Inventory Snapshot</div>
+    ${tableHTML(['SKU','Product','Category','Stock','UnitCost','TotalValue'], inventoryData, 'No inventory data available.')}
+  </div>
+
+  <!-- Footer -->
+  <div class="report-footer">
+    <span>ReInvent Inventory Management &mdash; Confidential</span>
+    <span>Generated on ${now}</span>
+  </div>
+
+</div>
+<script>window.onload = function() { window.print(); }<\/script>
+</body>
+</html>`;
+
+                // Open in new tab and trigger print dialog (saves as PDF)
+                const win = window.open('', '_blank');
+                if (!win) {
+                    alert('Pop-up blocked. Please allow pop-ups for this site to download the PDF.');
+                    return;
+                }
+                win.document.write(html);
+                win.document.close();
+            }
         });
     </script>
 </body>

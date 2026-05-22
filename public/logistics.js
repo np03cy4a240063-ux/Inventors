@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+    const API_BASE = window.location.port === '5000' ? '' : `http://${window.location.hostname}:5000`;
     const tabs = document.querySelectorAll('.table-tab');
     const tableBody = document.getElementById('logisticsTableBody');
     const searchInput = document.querySelector('.table-search input');
