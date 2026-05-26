@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="fetch_interceptor.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Orders - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="auth_check.js"></script>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li class="active"><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h4>SETTINGS</h4>
+                    <ul>
+                        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>Loading...</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <div class="global-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search products, orders...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="notifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <a href="profile.html" class="user-profile-btn">
+                        <div class="user-avatar">...</div>
+                        <div class="user-info-text">
+                            <span>Loading...</span>
+                            <small>Administrator</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <h3>Notifications</h3>
+                        <a href="#">Mark all as read</a>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <!-- Notifications will be added here -->
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="breadcrumb" style="margin-bottom: 20px; color: #64748B; font-size: 13px;">Operations > <strong style="color: #1E293B;">Purchase Order</strong></div>
+                
+                <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+                    <!-- Low Stock Items Card -->
+                    <div class="card" style="padding: 20px; border-radius: 12px; border: 1px solid #CBD5E1; background: #F8FAFC; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #1E293B; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-clipboard-list" style="color: #94A3B8;"></i> Low Stock Items
+                        </h3>
+                        <div style="background: white; border: 1px solid #CBD5E1; border-radius: 8px; overflow: hidden;">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                                <thead>
+                                    <tr style="background: #F1F5F9; border-bottom: 1px solid #CBD5E1; color: #64748B; font-size: 13px;">
+                                        <th style="padding: 12px 15px;">Select</th>
+                                        <th style="padding: 12px 15px;">Product</th>
+                                        <th style="padding: 12px 15px;">Stock</th>
+                                        <th style="padding: 12px 15px;">Min</th>
+                                        <th style="padding: 12px 15px;">Status</th>
+                                        <th style="padding: 12px 15px;">Reorder</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lowStockTable">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Add New Item Card -->
+                    <div class="card" id="purchaseStep1" style="padding: 20px; border-radius: 12px; border: 1px solid #CBD5E1; background: #F8FAFC; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #1E293B; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-truck" style="color: #94A3B8;"></i> Step 1: Select Supplier
+                        </h3>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="mSupplier" style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; background: white;">
+                                <option value="">-- Choose a Supplier --</option>
+                                <option value="Acme Trading">Acme Trading</option>
+                                <option value="TechSupply Inc">TechSupply Inc</option>
+                                <option value="Laxis Corp">Laxis Corp</option>
+                                <option value="Global Logistics">Global Logistics</option>
+                            </select>
+                            <button id="startOrderBtn" style="background: #1E293B; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">Start Order</button>
+                        </div>
+                    </div>
+
+                    <div id="purchaseStep2" style="display: none; flex-direction: column; gap: 20px;">
+                        <div class="card" style="padding: 20px; border-radius: 12px; border: 1px solid #CBD5E1; background: #F8FAFC; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #1E293B; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-box" style="color: #94A3B8;"></i> Step 2: Add Products for <span id="selectedSupplierName" style="color: #4F46E5;"></span>
+                            </h3>
+                            <form id="addManualItemForm" style="display: flex; gap: 10px; border-top: 1px solid #CBD5E1; padding-top: 15px;">
+                                <select id="mProductSelect" required style="flex: 2; padding: 10px; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 14px; background: white;">
+                                    <option value="">-- Select Product --</option>
+                                    <!-- Populated by JS -->
+                                </select>
+                                <input type="number" id="mQty" placeholder="Qty" required min="1" style="flex: 1; padding: 10px; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 14px;">
+                                <input type="number" id="mCost" placeholder="Cost" required min="1" style="flex: 1; padding: 10px; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 14px;">
+                                <button type="submit" style="background: #1E293B; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">Add to List</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Items Card -->
+                    <div class="card" style="padding: 20px; border-radius: 12px; border: 1px solid #CBD5E1; background: #F8FAFC; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="font-size: 16px; font-weight: 700; color: #1E293B; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-shopping-bag" style="color: #94A3B8;"></i> Purchase Items
+                            </h3>
+                            <button id="toggleSummaryBtn" style="background: #1E293B; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px;">
+                                <i class="fas fa-receipt"></i> View Summary
+                            </button>
+                        </div>
+                        <div style="background: white; border: 1px solid #CBD5E1; border-radius: 8px; overflow: hidden;">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                                <thead>
+                                    <tr style="background: #E2E8F0; color: #475569; font-size: 13px; font-weight: 600;">
+                                        <th style="padding: 12px 15px;">Product</th>
+                                        <th style="padding: 12px 15px;">Qty</th>
+                                        <th style="padding: 12px 15px;">Cost</th>
+                                        <th style="padding: 12px 15px;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="purchaseItemsTable">
+                                    <tr><td colspan="4" style="padding:20px; text-align:center; color:#94A3B8;">No items added yet.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Summary Box (Popup) -->
+                    <div id="summaryPopup" style="display: none; position: fixed; bottom: 30px; right: 30px; width: 350px; background: white; border: 1px solid #CBD5E1; border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 1000;">
+                        <h3 style="font-size: 18px; font-weight: 700; color: #1E293B; margin-bottom: 20px;">Summary</h3>
+                        
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #475569;">
+                            <span>Items</span>
+                            <strong id="sumItems">0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #475569;">
+                            <span>Total Qty</span>
+                            <strong id="sumQty">0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #475569;">
+                            <span>Subtotal</span>
+                            <strong id="sumSubtotal">0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #475569; padding-bottom: 15px; border-bottom: 1px solid #E2E8F0;">
+                            <span>Tax</span>
+                            <strong id="sumTax">0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 16px; font-weight: 700; color: #1E293B;">
+                            <span>Total</span>
+                            <span id="sumTotal">0</span>
+                        </div>
+
+                        <button id="createPoBtn" style="width: 100%; background: black; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; font-size: 14px; margin-bottom: 10px; cursor: pointer;">Create Purchase Order</button>
+                        <button id="cancelPoBtn" style="width: 100%; background: white; color: #1E293B; border: 1px solid #CBD5E1; padding: 12px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;"><i class="fas fa-times"></i> Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="header.js"></script>
+    <script src="purchase_orders.js"></script>
+</body>
+</html>

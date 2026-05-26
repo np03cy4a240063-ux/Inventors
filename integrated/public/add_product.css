@@ -1,0 +1,266 @@
+/* Add Product Page Styles */
+
+:root {
+    --add-bg: #F8FAFC;
+    --add-card-bg: #FFFFFF;
+    --add-border: #E2E8F0;
+    --add-primary: #1A1A1A; /* Black buttons like in screenshot */
+    --add-accent: #4F46E5;
+    --add-text: #1E293B;
+    --add-muted: #64748B;
+    --add-required: #EF4444;
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: var(--add-muted);
+}
+
+.breadcrumb strong {
+    color: var(--add-text);
+}
+
+.add-product-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 25px;
+    align-items: start;
+}
+
+.add-card {
+    background: var(--add-card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--add-border);
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.card-header-icon {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.card-header-icon i {
+    font-size: 1.2rem;
+    color: var(--add-muted);
+}
+
+.card-header-icon h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.add-card h3 {
+    margin: 0 0 20px 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--add-text);
+    margin-bottom: 8px;
+}
+
+.required {
+    color: var(--add-required);
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--add-border);
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #FFFFFF;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--add-accent);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+textarea {
+    height: 120px;
+    resize: none;
+}
+
+.input-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--add-muted);
+    margin-top: 6px;
+}
+
+.input-with-action {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-auto-gen {
+    padding: 0 15px;
+    background: #F1F5F9;
+    border: 1.5px solid var(--add-border);
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* Right Column Styles */
+.image-upload-area {
+    border: 2px dashed var(--add-border);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.image-upload-area:hover {
+    border-color: var(--add-accent);
+    background: #F8FAFC;
+}
+
+.upload-placeholder i {
+    font-size: 2.5rem;
+    color: var(--add-muted);
+    margin-bottom: 15px;
+}
+
+.upload-placeholder p {
+    font-weight: 600;
+    margin: 0 0 5px 0;
+}
+
+.upload-placeholder span {
+    font-size: 0.75rem;
+    color: var(--add-muted);
+    display: block;
+    margin-bottom: 15px;
+}
+
+.btn-browse {
+    padding: 8px 20px;
+    background: white;
+    border: 1px solid var(--add-border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.preview-card {
+    background: #FFFFFF;
+}
+
+.preview-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+}
+
+.preview-item span {
+    color: var(--add-muted);
+}
+
+.preview-item strong {
+    color: var(--add-text);
+}
+
+.preview-item.highlight {
+    margin-top: 15px;
+}
+
+.green-text {
+    color: #10B981;
+}
+
+.preview-info-box {
+    margin-top: 20px;
+    background: #E0F2FE;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    gap: 12px;
+}
+
+.preview-info-box i {
+    color: #0284C7;
+    margin-top: 3px;
+}
+
+.preview-info-box p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #0369A1;
+    line-height: 1.4;
+}
+
+/* Actions */
+.form-actions-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-save-full {
+    padding: 15px;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.2s;
+}
+
+.btn-save-full:hover {
+    background: #222;
+}
+
+.btn-cancel-full {
+    padding: 15px;
+    background: white;
+    color: var(--add-text);
+    border: 1.5px solid var(--add-border);
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-cancel-full:hover {
+    background: #F8FAFC;
+}

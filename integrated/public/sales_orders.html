@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="fetch_interceptor.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Orders - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="profile_inv.css"> <!-- Reusing table layout styles -->
+    <link rel="stylesheet" href="header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="auth_check.js"></script>
+</head>
+<body class="dashboard-body inventory-page-bg">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li class="active"><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-section">
+                    <h4>SETTINGS</h4>
+                    <ul>
+                        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>Loading...</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <div class="global-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search products, orders...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button onclick="openAddOrderModal()" style="padding: 10px 15px; background: #4F46E5; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-plus"></i> Create Sales Order
+                    </button>
+                    <button class="header-btn" id="notifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <a href="profile.html" class="user-profile-btn">
+                        <div class="user-avatar">...</div>
+                        <div class="user-info-text">
+                            <span>Loading...</span>
+                            <small>Administrator</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <h3>Notifications</h3>
+                        <a href="#">Mark all as read</a>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <!-- Notifications will be added here -->
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content sales-order-content">
+                <div class="breadcrumb" style="margin-bottom: 20px; color: #64748B; font-size: 13px;">Operations > <strong style="color: #1E293B;">Sales Order</strong></div>
+                
+                <div class="stats-row" style="margin-bottom: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                    <div class="stat-card" style="padding: 20px; border-radius: 12px; background: white; border: 1px solid #E2E8F0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <div class="stat-header" style="font-size: 13px; font-weight: 500; color: #475569; margin-bottom: 10px;">Total Orders</div>
+                        <div class="stat-value" id="soTotalOrders" style="font-size: 24px; font-weight: 700; color: #1E293B; margin-bottom: 5px;">0 -</div>
+                        <div class="stat-change" style="font-size: 12px; font-weight: 600; color: #64748B;"><i class="fas fa-caret-up"></i> 0% last week</div>
+                    </div>
+                    <div class="stat-card" style="padding: 20px; border-radius: 12px; background: white; border: 1px solid #E2E8F0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <div class="stat-header" style="font-size: 13px; font-weight: 500; color: #475569; margin-bottom: 10px;">Order items over time</div>
+                        <div class="stat-value" id="soOrderItems" style="font-size: 24px; font-weight: 700; color: #1E293B; margin-bottom: 5px;">0 -</div>
+                        <div class="stat-change" style="font-size: 12px; font-weight: 600; color: #64748B;"><i class="fas fa-caret-up"></i> 0% last week</div>
+                    </div>
+                    <div class="stat-card" style="padding: 20px; border-radius: 12px; background: white; border: 1px solid #E2E8F0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <div class="stat-header" style="font-size: 13px; font-weight: 500; color: #475569; margin-bottom: 10px;">Returns Orders</div>
+                        <div class="stat-value" id="soReturns" style="font-size: 24px; font-weight: 700; color: #1E293B; margin-bottom: 5px;">0 -</div>
+                        <div class="stat-change" style="font-size: 12px; font-weight: 600; color: #64748B;"><i class="fas fa-caret-down"></i> 0% last week</div>
+                    </div>
+                    <div class="stat-card" style="padding: 20px; border-radius: 12px; background: white; border: 1px solid #E2E8F0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <div class="stat-header" style="font-size: 13px; font-weight: 500; color: #475569; margin-bottom: 10px;">Fulfilled orders over time</div>
+                        <div class="stat-value" id="soFulfilled" style="font-size: 24px; font-weight: 700; color: #1E293B; margin-bottom: 5px;">0 -</div>
+                        <div class="stat-change" style="font-size: 12px; font-weight: 600; color: #64748B;"><i class="fas fa-caret-up"></i> 0% last week</div>
+                    </div>
+                </div>
+
+                <div class="tabs-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div class="tabs-bg" style="background: #E2E8F0; padding: 4px; border-radius: 8px; display: inline-flex;">
+                        <button class="tab-btn active" style="padding: 8px 24px; border: none; background: white; border-radius: 6px; font-weight: 600; color: #1E293B; box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer;">All</button>
+                        <button class="tab-btn" style="padding: 8px 24px; border: none; background: transparent; font-weight: 500; color: #475569; cursor: pointer;">Unfulfilled</button>
+                        <button class="tab-btn" style="padding: 8px 24px; border: none; background: transparent; font-weight: 500; color: #475569; cursor: pointer;">Unpaid</button>
+                        <button class="tab-btn" style="padding: 8px 24px; border: none; background: transparent; font-weight: 500; color: #475569; cursor: pointer;">Open</button>
+                        <button class="tab-btn" style="padding: 8px 24px; border: none; background: transparent; font-weight: 500; color: #475569; cursor: pointer;">Closed</button>
+                    </div>
+                    <div class="tab-actions" style="color: #94A3B8; font-size: 18px; cursor: pointer;">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                </div>
+
+                <div class="card inventory-table-container" style="border-radius: 12px; border: 2px solid #E2E8F0; overflow: hidden; padding: 0;">
+                    <div class="table-responsive-wrapper">
+                        <table class="refined-table" id="ordersTable" style="width: 100%; border-collapse: collapse; background: #F8FAFC;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #E2E8F0; background: #F1F5F9; color: #64748B; font-weight: 600; font-size: 13px; text-transform: capitalize;">
+                                    <th style="padding: 15px; width: 40px; text-align: center;"><input type="checkbox" style="width: 16px; height: 16px;"></th>
+                                    <th style="padding: 15px; text-align: left;">Order</th>
+                                    <th style="padding: 15px; text-align: left;">Date</th>
+                                    <th style="padding: 15px; text-align: left;">Customer</th>
+                                    <th style="padding: 15px; text-align: center;">Payment</th>
+                                    <th style="padding: 15px; text-align: left;">Total</th>
+                                    <th style="padding: 15px; text-align: left;">Delivery</th>
+                                    <th style="padding: 15px; text-align: left;">Items</th>
+                                    <th style="padding: 15px; text-align: center;">Fulfillment</th>
+                                    <th style="padding: 15px; text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody style="background: white;">
+                                <!-- Generated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Sales Order Modal -->
+    <div id="orderModal" class="modal-overlay">
+        <div class="modal-box luxury">
+            <div class="modal-header">
+                <h2>Create Sales Order</h2>
+                <span class="modal-close" id="closeModal">&times;</span>
+            </div>
+            <form id="orderForm">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="f-group">
+                            <label>Order ID</label>
+                            <input type="text" id="oId" readonly placeholder="SO-AUTO">
+                        </div>
+                        <div class="f-group">
+                            <label>Date</label>
+                            <input type="date" id="oDate" required>
+                        </div>
+                    </div>
+                    <div class="f-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="oCustomer" required placeholder="Select or type customer">
+                    </div>
+                    
+                    <div class="order-items-section" style="margin-top: 20px; border-top: 1px solid #E2E8F0; padding-top: 20px;">
+                        <h3 style="font-size: 14px; margin-bottom: 10px; color: #475569;">Order Items</h3>
+                        <div id="itemList" style="margin-bottom: 10px;">
+                            <!-- Items will be added here -->
+                        </div>
+                        <button type="button" id="addItemBtn" style="background: #F1F5F9; border: 1px dashed #CBD5E1; color: #475569; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-plus"></i> Add Another Product
+                        </button>
+                    </div>
+
+                    <div class="order-summary" style="margin-top: 20px; background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid #E2E8F0;">
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 16px;">
+                            <span>Total Amount:</span>
+                            <span id="oTotalLabel">Rs. 0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+                    <button type="button" id="checkStockBtn" style="padding: 12px 20px; background: #F59E0B; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Check Stock</button>
+                    <button type="submit" class="btn-save" id="saveBtn" disabled>Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="header.js"></script>
+    <script src="sales_orders.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="fetch_interceptor.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="auth-page">
+    <div class="auth-wrapper">
+        <div class="auth-left">
+            <div class="auth-brand">
+                <div class="brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="brand-text">
+                    <h1>ReInvent.</h1>
+                    <p>INVENTORY MANAGEMENT</p>
+                </div>
+            </div>
+
+            <div class="left-cards-container">
+                <div class="info-card">
+                    <h2>Control your<br>stock with<br>confidence.</h2>
+                    <div class="vertical-line"></div>
+                    <p>Monitor inventory in real time, track purchases and sales, and get instant alerts before you run out of stock.</p>
+                </div>
+
+                <div class="efforts-card">
+                    <div class="efforts-header">Lidea's Efforts</div>
+                    <ul class="efforts-list">
+                        <li><div class="dot-text"><span class="dot"></span> Instant stock feedback</div> <i class="fas fa-chart-line"></i></li>
+                        <li><div class="dot-text"><span class="dot"></span> Low stock alerts</div> <i class="fas fa-bell"></i></li>
+                        <li><div class="dot-text"><span class="dot"></span> Profit tracking</div> <i class="fas fa-chart-bar"></i></li>
+                        <li><div class="dot-text"><span class="dot"></span> Purchase orders</div> <i class="fas fa-shopping-cart"></i></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-right">
+            <div class="auth-header">
+                <h1>Welcome back</h1>
+                <p>Sign in to your ReInvent account</p>
+            </div>
+
+            <div class="form-container login-box">
+                <div class="login-banner"></div>
+                <div class="form-input-side">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label>Email address</label>
+                            <input type="email" name="email" value="Admin123@gmail.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="label-row">
+                                <label>Password</label>
+                                <a href="forgot_password.html" class="forgot-link">Forgot Password?</a>
+                            </div>
+                            <div class="password-field">
+                                <input type="password" id="loginPassword" name="password" value="admin123" required>
+                                <i class="fas fa-eye-slash toggle-password" id="toggleLoginPassword"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember me for 30 days</label>
+                        </div>
+
+                        <button type="submit" class="auth-submit-btn inline-btn">
+                            <i class="fas fa-arrow-right-to-bracket"></i> Sign In
+                        </button>
+
+                        <div class="login-create-account">
+                            Don't have an account? <a href="signup.html">Create one for free</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="auth-legal">
+                By signing in, you agree to our Terms of Service & Privacy Policy
+            </div>
+        </div>
+    </div>
+    <script src="header.js"></script>
+    <script src="script_v3.js"></script>
+</body>
+</html>
