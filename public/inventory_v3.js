@@ -1,6 +1,6 @@
 console.log('REINVENT_V2_INVENTORY_V4_ACTIVE');
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+    const API_BASE = window.location.port === '3001' ? '' : 'http://localhost:3001';
     let products = [];
     let currentTab = 'All';
     let searchQuery = '';

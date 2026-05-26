@@ -1,6 +1,6 @@
 console.log('REINVENT_V2_DASHBOARD_V4_ACTIVE');
 document.addEventListener('DOMContentLoaded', async () => {
-    const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+    const API_BASE = window.location.port === '3001' ? '' : 'http://localhost:3001';
     
     // Inventory & Orders Data
     let products = [];
@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Update Alert Box
     const alertEl = document.getElementById('dashboardAlert');
     if (alertEl) {
-        alertEl.innerHTML = `${lowStock.length} products are below minimum stock threshold and ${outOfStock.length} items are out of stock. <a href="inventory.html">View inventory</a>.`;
+        alertEl.innerHTML = `${lowStock.length} products are below minimum stock threshold and ${outOfStock.length} items are out of stock.
+         <a href="inventory.html">View inventory</a>.`;
         if (lowStock.length === 0 && outOfStock.length === 0) {
             document.querySelector('.alert-box').style.display = 'none';
         } else {
@@ -51,14 +52,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // 1. Render Product Movement (Top 4)
+    // 1. Render Product Movement
+    const movementTabs = document.querySelectorAll('.product-movement-card .tab');
     const productListEl = document.getElementById('fastMovingProducts');
-    if (productListEl) {
+    
+    function renderMovementList(type) {
+        if (!productListEl) return;
         productListEl.innerHTML = products.length === 0 ? '<p style="padding:20px; color:#94A3B8; font-weight:600;">No product data available yet.</p>' : '';
-        const sorted = [...products].sort((a,b) => (b.stock) - (a.stock)).slice(0, 4);
         
-        sorted.forEach(p => {
-            const mv = Math.min(100, Math.round((p.stock / (p.min || 1)) * 50)); // Simulated movement for demo
+        let filteredProducts = [];
+        if (type === 'fast') {
+            // Fast Moving: Sorted by (Sell Price * Stock) as a proxy for movement, or just top sellers
+            filteredProducts = [...products].sort((a,b) => (b.sell * b.stock) - (a.sell * a.stock)).slice(0, 4);
+        } else if (type === 'slow') {
+            // Slow Moving: High stock but low movement proxy
+            filteredProducts = [...products].sort((a,b) => (b.stock - a.stock)).slice(0, 4);
+        } else if (type === 'aging') {
+            // Aging: Oldest products (using created_at)
+            filteredProducts = [...products].sort((a,b) => new Date(a.created_at) - new Date(b.created_at)).slice(0, 4);
+        }
+
+        filteredProducts.forEach(p => {
+            const mv = Math.min(100, Math.round((p.stock / (p.min || 1)) * 50));
             let barClass = 'low';
             if(mv > 80) barClass = 'high';
             else if (mv > 60) barClass = 'med';
@@ -76,12 +91,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="product-stat">
                     <div class="stat-percent">${mv}%</div>
-                    <div class="stat-label">stock level</div>
+                    <div class="stat-label">${type === 'aging' ? 'shelf age' : 'movement'}</div>
                 </div>
             `;
             productListEl.appendChild(row);
         });
     }
+
+    movementTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            movementTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const type = tab.textContent.toLowerCase().includes('fast') ? 'fast' : 
+                         tab.textContent.toLowerCase().includes('slow') ? 'slow' : 'aging';
+            renderMovementList(type);
+        });
+    });
+
+    // Initial render
+    renderMovementList('fast');
 
     // 2. Revenue Overview Chart (Real Data)
     const ctxRevenue = document.getElementById('revenueChart');

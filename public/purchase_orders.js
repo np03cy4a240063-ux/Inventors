@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+    const API_BASE = window.location.port === '3001' ? '' : 'http://localhost:3001';
     let products = [];
     let cart = []; // { id, name, qty, cost, supplier }
 
@@ -171,11 +171,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSummary();
     }
 
+    // Real-time calculation
     function updateSummary() {
         const itemsCount = cart.length;
         const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
         const subtotal = cart.reduce((sum, item) => sum + (item.qty * item.cost), 0);
-        const tax = 0; // Keeping 0 as per UI
+        const tax = 0; 
         const total = subtotal + tax;
 
         document.getElementById('sumItems').textContent = itemsCount;
