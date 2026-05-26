@@ -1,6 +1,6 @@
 console.log('REINVENT_V2_INTEGRATED_V3_ACTIVE');
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = window.location.port === '5000' ? '' : 'http://localhost:5000';
+    const API_BASE = window.location.port === '3001' ? '' : 'http://localhost:3001';
 
     // Contact Form (Splash Page)
     const queryForm = document.getElementById('queryForm');
@@ -75,19 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Login Form
     const loginForm = document.getElementById('loginForm');
-    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
-    const loginPassword = document.getElementById('loginPassword');
-
-    if (toggleLoginPassword && loginPassword) {
-        toggleLoginPassword.addEventListener('click', () => {
-            const type = loginPassword.getAttribute('type') === 'password' ? 'text' : 'password';
-            loginPassword.setAttribute('type', type);
-            toggleLoginPassword.classList.toggle('fa-eye');
-            toggleLoginPassword.classList.toggle('fa-eye-slash');
-        });
-    }
 
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
