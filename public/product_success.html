@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Created - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .success-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .success-banner { background: #10B981; border-radius: 12px; padding: 40px; text-align: center; color: white; margin-bottom: 30px; }
+        .success-icon-bg { background: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 12px; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; font-size: 40px; }
+        .success-banner h2 { font-size: 28px; margin-bottom: 10px; }
+        .success-banner p { font-size: 15px; opacity: 0.9; margin-bottom: 20px; }
+        .success-meta { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; font-size: 13px; }
+        
+        .summary-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #E2E8F0; }
+        .summary-header { display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #E2E8F0; padding-bottom: 15px; margin-bottom: 20px; font-weight: 600; color: #1E293B; }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .summary-item { display: flex; flex-direction: column; gap: 5px; }
+        .summary-item label { font-size: 11px; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .summary-item .val { font-size: 15px; font-weight: 600; color: #1E293B; }
+        .val.green { color: #10B981; }
+        .val.blue { color: #3B82F6; }
+
+        .value-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid #E2E8F0; }
+        .value-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .v-box { padding: 20px; border-radius: 8px; text-align: left; }
+        .v-box.blue-bg { background: #EFF6FF; }
+        .v-box.green-bg { background: #ECFDF5; }
+        .v-box.yellow-bg { background: #FEFCE8; }
+        .v-box h3 { font-size: 24px; margin-bottom: 5px; }
+        .v-box.blue-bg h3 { color: #2563EB; }
+        .v-box.green-bg h3 { color: #059669; }
+        .v-box.yellow-bg h3 { color: #D97706; }
+        .v-box span { font-size: 12px; color: #64748B; font-weight: 500; }
+
+        .action-buttons { display: flex; gap: 15px; margin-bottom: 30px; }
+        .action-buttons a { flex: 1; text-align: center; padding: 14px; border-radius: 8px; font-weight: 600; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-outline { border: 1px solid #CBD5E1; color: #1E293B; background: white; }
+        .btn-outline:hover { background: #F8FAFC; }
+        .btn-primary { background: #4F46E5; color: white; }
+        .btn-primary:hover { background: #4338CA; }
+        
+        .back-dash { text-align: center; }
+        .back-dash a { color: #64748B; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+        .back-dash a:hover { color: #1E293B; }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li class="active"><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>Loading...</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header" style="border-bottom: 1px solid #E2E8F0; padding-bottom: 15px; margin-bottom: 20px;">
+                <div class="header-left">
+                    <h2 style="margin:0; font-size:24px; color:#1E293B;">Product Created</h2>
+                    <span style="font-size:13px; color:#64748B;">Inventory &rarr; Add Product &rarr; Success</span>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="notifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <a href="profile.html" class="user-profile-btn">
+                        <div class="user-avatar">...</div>
+                        <div class="user-info-text">
+                            <span>Loading...</span>
+                            <small>Administrator</small>
+                        </div>
+                    </a>
+                </div>
+            </header>
+
+            <div class="dashboard-content" style="background: #F8FAFC; min-height: calc(100vh - 100px); margin: -20px; padding: 20px;">
+                <div class="success-container">
+                    
+                    <div class="success-banner">
+                        <div class="success-icon-bg"><i class="fas fa-check"></i></div>
+                        <h2>Product Successfully Created!</h2>
+                        <p>The product has been added to your inventory and stock levels have been updated.</p>
+                        <div class="success-meta">
+                            <i class="far fa-clock"></i> <span id="createdMeta">Created just now - by Administrator</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-header">
+                            <i class="fas fa-clipboard-list" style="color:#EF4444;"></i> Product Summary
+                        </div>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <label>Product Name</label>
+                                <span class="val" id="sName">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <label>SKU</label>
+                                <span class="val" id="sSku">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Category</label>
+                                <span class="val" id="sCat">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Opening Stock</label>
+                                <span class="val green" id="sStock">- units</span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Cost Price</label>
+                                <span class="val" id="sCost">Rs. 0</span>
+                            </div>
+                            <div class="summary-item">
+                                <label>Selling Price</label>
+                                <span class="val blue" id="sSell">Rs. 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="summary-header" style="border:none; padding:0; margin-bottom:15px;">
+                            <i class="fas fa-chart-bar" style="color:#3B82F6;"></i> Stock Value Added to System
+                        </div>
+                        <div class="value-grid">
+                            <div class="v-box blue-bg">
+                                <h3 id="vTotal">Rs. 0</h3>
+                                <span>Total Stock Value</span>
+                            </div>
+                            <div class="v-box green-bg">
+                                <h3 id="vProfit">Rs. 0</h3>
+                                <span>Est. Potential Profit</span>
+                            </div>
+                            <div class="v-box yellow-bg">
+                                <h3 id="vMargin">0%</h3>
+                                <span>Gross Margin</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <a href="add_product.html" class="btn-outline"><i class="fas fa-plus"></i> Add Another Product</a>
+                        <a href="inventory.html" class="btn-primary"><i class="fas fa-arrow-right"></i> View Inventory</a>
+                    </div>
+
+                    <div class="back-dash">
+                        <a href="dashboard.html"><i class="fas fa-th-large"></i> Back to Dashboard</a>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            
+            const name = params.get('name') || 'Unknown Product';
+            const sku = params.get('sku') || '-';
+            const cat = params.get('category') || '-';
+            const stock = parseInt(params.get('stock') || 0);
+            const cost = parseFloat(params.get('cost') || 0);
+            const sell = parseFloat(params.get('sell') || 0);
+            const totalValue = parseFloat(params.get('totalValue') || 0);
+            const totalProfit = parseFloat(params.get('totalProfit') || 0);
+            const margin = params.get('margin') || '0';
+
+            document.getElementById('sName').textContent = name;
+            document.getElementById('sSku').textContent = sku;
+            document.getElementById('sCat').textContent = cat;
+            document.getElementById('sStock').textContent = `${stock.toLocaleString()} units`;
+            document.getElementById('sCost').textContent = `Rs. ${cost.toLocaleString()}`;
+            document.getElementById('sSell').textContent = `Rs. ${sell.toLocaleString()}`;
+            
+            document.getElementById('vTotal').textContent = `Rs. ${totalValue.toLocaleString()}`;
+            document.getElementById('vProfit').textContent = `Rs. ${totalProfit.toLocaleString()}`;
+            document.getElementById('vMargin').textContent = `${margin}%`;
+
+            const dateStr = new Date().toLocaleString('en-GB', { 
+                day: 'numeric', month: 'short', year: 'numeric', 
+                hour: '2-digit', minute:'2-digit' 
+            });
+            
+            // Try to get logged in user's name if available from profile script, otherwise default
+            let userName = 'Administrator';
+            try {
+                const sessionUser = JSON.parse(sessionStorage.getItem('reinvent_user'));
+                if (sessionUser && sessionUser.first_name) {
+                    userName = sessionUser.first_name + ' ' + sessionUser.last_name;
+                }
+            } catch(e){}
+
+            document.getElementById('createdMeta').textContent = `Created on ${dateStr} - by ${userName}`;
+        });
+    </script>
+</body>
+</html>

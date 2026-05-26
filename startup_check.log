@@ -1,0 +1,42 @@
+ReInvent v2 running on port 5000
+--- DATABASE CONNECTED SUCCESSFULLY ---
+Connected to: reinvent_db_v2
+7:29:11 AM - GET /api/health
+7:29:11 AM - GET /favicon.ico
+7:29:13 AM - GET /api/health
+7:29:13 AM - GET /favicon.ico
+7:29:23 AM - GET /api/health
+7:29:23 AM - GET /favicon.ico
+7:29:24 AM - GET /api/health
+7:29:24 AM - GET /favicon.ico
+7:29:24 AM - GET /api/health
+7:29:24 AM - GET /favicon.ico
+7:29:25 AM - GET /api/health
+7:29:25 AM - GET /favicon.ico
+7:29:37 AM - GET /api/health
+7:29:37 AM - GET /favicon.ico
+7:30:12 AM - POST /api/products/batch
+Batch product sync DB error: Out of range value for column 'id' at row 1
+7:30:18 AM - POST /api/products/batch
+Batch product sync DB error: Out of range value for column 'id' at row 1
+7:30:49 AM - POST /api/products/batch
+Batch product sync DB error: Out of range value for column 'id' at row 1
+7:38:03 AM - POST /api/products/batch
+Successfully synced 4 products to DB
+7:51:39 AM - GET /api/profile
+7:52:12 AM - POST /api/register
+7:52:30 AM - POST /api/login
+7:52:32 AM - GET /api/products
+7:56:02 AM - GET /api/products
+7:56:18 AM - GET /api/products
+7:56:22 AM - GET /api/profile
+7:56:44 AM - GET /api/products
+7:56:48 AM - GET /api/profile
+7:57:10 AM - POST /api/profile
+7:57:16 AM - GET /api/products
+7:57:18 AM - GET /api/products
+7:57:21 AM - GET /api/products
+7:57:30 AM - GET /api/profile
+7:57:42 AM - GET /api/profile
+7:57:44 AM - GET /api/profile
+7:57:46 AM - GET /api/products

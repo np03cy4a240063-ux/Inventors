@@ -1,0 +1,19 @@
+/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/path-to-regexp/dist/index.js:85
+            throw new PathError(`Missing parameter name at index ${index}`, str);
+            ^
+
+PathError [TypeError]: Missing parameter name at index 1: *; visit https://git.new/pathToRegexpError for info
+    at name (/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/path-to-regexp/dist/index.js:85:19)
+    at parse (/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/path-to-regexp/dist/index.js:101:59)
+    at pathToRegexp (/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/path-to-regexp/dist/index.js:264:56)
+    at Object.match (/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/path-to-regexp/dist/index.js:225:30)
+    at matcher (/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/router/lib/layer.js:86:23)
+    at new Layer (/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/router/lib/layer.js:93:62)
+    at router.route (/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/router/index.js:428:17)
+    at app.route (/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/express/lib/application.js:257:22)
+    at app.<computed> [as get] (/opt/lampp/htdocs/Reinvent/v2/integrated/node_modules/express/lib/application.js:478:22)
+    at Object.<anonymous> (/opt/lampp/htdocs/Reinvent/v2/integrated/server.js:150:5) {
+  originalPath: '*'
+}
+
+Node.js v25.9.0

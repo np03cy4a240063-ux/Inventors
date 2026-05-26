@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="add_product.css">
+    <link rel="stylesheet" href="header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li class="active"><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>Loading...</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <div class="global-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search products, orders...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="notifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <a href="profile.html" class="user-profile-btn">
+                        <div class="user-avatar">...</div>
+                        <div class="user-info-text">
+                            <span>Loading...</span>
+                            <small>Administrator</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <h3>Notifications</h3>
+                        <a href="#">Mark all as read</a>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <!-- Notifications will be added here -->
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="breadcrumb">
+                    Inventory > <strong>Add New Product</strong>
+                </div>
+
+                <form id="addProductForm" class="add-product-grid">
+                    <!-- Left Column -->
+                    <div class="add-column-left">
+                        <!-- Basic Information -->
+                        <div class="add-card">
+                            <div class="card-header-icon">
+                                <i class="fas fa-file-alt"></i>
+                                <h3>Basic Information</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Product Name <span class="required">*</span></label>
+                                    <input type="text" id="name" name="name" placeholder="e.g. Hair Brush 15mm" required>
+                                    <span class="input-hint">Use a clear, descriptive name that includes the model or variant.</span>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>SKU / Product Code <span class="required">*</span></label>
+                                        <div class="input-with-action">
+                                            <input type="text" id="sku" name="sku" placeholder="e.g. SKU-6788" required>
+                                            <button type="button" class="btn-auto-gen" id="genSku">Auto-generate</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Category <span class="required">*</span></label>
+                                        <select id="category" name="category" required>
+                                            <option value="">Select category</option>
+                                            <option value="Beauty">Beauty</option>
+                                            <option value="General Purpose">General Purpose</option>
+                                            <option value="Accessories">Accessories</option>
+                                            <option value="Storage">Storage</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Brand / Supplier</label>
+                                        <input type="text" id="brand" name="brand" placeholder="e.g. Nivea, Enzo">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea id="desc" name="desc" placeholder="Describe the product - features, specs, usage notes..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stock Settings -->
+                        <div class="add-card">
+                            <div class="card-header-icon">
+                                <i class="fas fa-boxes"></i>
+                                <h3>Stock Settings</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Opening Stock Qty <span class="required">*</span></label>
+                                        <input type="number" id="stock" name="stock" value="0" required>
+                                        <span class="input-hint">Current units on hand</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Unit of Measure</label>
+                                        <select id="unit" name="unit">
+                                            <option value="Unit (pcs)">Unit (pcs)</option>
+                                            <option value="Box">Box</option>
+                                            <option value="Kg">Kg</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Minimum Stock Alert <span class="required">*</span></label>
+                                        <input type="number" id="min" name="min" placeholder="e.g. 10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Reorder Quantity</label>
+                                        <input type="number" id="reorder_qty" name="reorder_qty" placeholder="e.g. 50">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Storage Location</label>
+                                    <input type="text" id="location" name="location" placeholder="e.g. Warehouse A, Shelf B2, Bin 04">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing -->
+                        <div class="add-card">
+                            <div class="card-header-icon">
+                                <i class="fas fa-tag"></i>
+                                <h3>Pricing</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Cost Price (Rs) <span class="required">*</span></label>
+                                        <input type="number" id="cost" name="cost" step="0.01" placeholder="Rs 0.00" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Selling Price (Rs) <span class="required">*</span></label>
+                                        <input type="number" id="sell" name="sell" step="0.01" placeholder="Rs 0.00" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tax / GST</label>
+                                    <select id="tax" name="tax">
+                                        <option value="No Tax">No Tax</option>
+                                        <option value="VAT 13%">VAT 13%</option>
+                                        <option value="GST 18%">GST 18%</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="add-column-right">
+                        <!-- Product Image -->
+                        <div class="add-card">
+                            <h3>Product Image</h3>
+                            <div class="image-upload-area" id="imageUploadArea">
+                                <div class="upload-placeholder">
+                                    <i class="far fa-image"></i>
+                                    <p>Drop image here</p>
+                                    <span>JPG, PNG, WebP - max 5MB</span>
+                                    <button type="button" class="btn-browse">Browse Files</button>
+                                </div>
+                                <input type="file" id="imageInput" hidden accept="image/*">
+                                <img id="imagePreview" src="" alt="Preview" style="display: none; width: 100%; border-radius: 8px;">
+                            </div>
+                        </div>
+
+                        <!-- Stock Calculation Preview -->
+                        <div class="add-card preview-card">
+                            <h3>Stock Calculation Preview</h3>
+                            <div class="preview-item">
+                                <span>Opening Stock</span>
+                                <strong id="prevStock">- units</strong>
+                            </div>
+                            <div class="preview-item">
+                                <span>Total Stock Value</span>
+                                <strong id="prevValue">Rs -</strong>
+                            </div>
+                            <hr>
+                            <div class="preview-item highlight">
+                                <span>Est. Gross Profit</span>
+                                <strong id="prevProfit" class="green-text">Rs - (-) %</strong>
+                            </div>
+                            <div class="preview-info-box">
+                                <i class="fas fa-info-circle"></i>
+                                <p>Stock Value = Cost Price × Qty. Updates in real-time as you type.</p>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions-stack">
+                            <button type="submit" class="btn-save-full"><i class="fas fa-save"></i> Save Product</button>
+                            <button type="button" class="btn-cancel-full" onclick="location.href='inventory.html'"><i class="fas fa-times"></i> Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="header.js"></script>
+    <script src="add_product.js"></script>
+</body>
+</html>

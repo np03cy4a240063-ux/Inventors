@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - ReInvent</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="analytics.css">
+    <link rel="stylesheet" href="header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="sidebar-brand-text">
+                    <h2>ReInvent.</h2>
+                    <span>V1.0</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">
+                    <h4>MAIN</h4>
+                    <ul>
+                        <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                        <li><a href="inventory.html"><i class="fas fa-box"></i> Inventory</a></li>
+                        <li><a href="logistics.html"><i class="fas fa-truck"></i> Logistics</a></li>
+                        <li class="active"><a href="analytics.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-section">
+                    <h4>OPERATIONS</h4>
+                    <ul>
+                        <li><a href="sales_orders.html"><i class="fas fa-shopping-cart"></i> Sales Orders</a></li>
+                        <li><a href="purchase_orders.html"><i class="fas fa-file-invoice"></i> Purchase Orders</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-user-bottom">
+                 <div class="user-bottom-info">
+                     <i class="fas fa-user-circle"></i>
+                     <div class="u-text">
+                         <strong>Loading...</strong>
+                         <span>Administrator</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-cog"></i>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <div class="global-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearchInput" placeholder="Search products, orders...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="filter-group">
+                        <select class="header-select">
+                            <option>March 2026</option>
+                        </select>
+                    </div>
+                    <button class="export-btn" onclick="window.location.href='export_report.html'"><i class="fas fa-file-export"></i> Export Report</button>
+                    <button class="header-btn" id="notifBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <a href="profile.html" class="user-profile-btn">
+                        <div class="user-avatar">...</div>
+                        <div class="user-info-text">
+                            <span>Loading...</span>
+                            <small>Administrator</small>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notifDropdown">
+                    <div class="notif-header">
+                        <h3>Notifications</h3>
+                        <a href="#">Mark all as read</a>
+                    </div>
+                    <div class="notif-list" id="notifList">
+                        <!-- Notifications will be added here -->
+                    </div>
+                </div>
+            </header>
+
+
+
+            <div class="dashboard-content">
+                <div class="analytics-header-info">
+                    <h2>Business Performance - March 2026</h2>
+                    <p>Overview of revenue, profit, stock movement, and inventory health for the selected period. Use these insights to guide purchasing, pricing, and sales decisions.</p>
+                </div>
+
+                <!-- Top Metrics -->
+                <div class="analytics-metrics-row">
+                    <div class="ana-metric-card">
+                        <span class="ana-label">REVENUE</span>
+                        <h3 id="anaRevenue">Rs. 0</h3>
+                        <span class="ana-change"><i class="fas fa-caret-up"></i> 0%</span>
+                    </div>
+                    <div class="ana-metric-card">
+                        <span class="ana-label">GROSS PROFIT</span>
+                        <h3 id="anaProfit">Rs. 0</h3>
+                        <span class="ana-change"><i class="fas fa-caret-up"></i> 0%</span>
+                    </div>
+                    <div class="ana-metric-card">
+                        <span class="ana-label">PROFIT MARGIN</span>
+                        <h3 id="anaMargin">0%</h3>
+                        <span class="ana-change"><i class="fas fa-caret-up"></i> 0pp</span>
+                    </div>
+                    <div class="ana-metric-card">
+                        <span class="ana-label">UNITS SOLD</span>
+                        <h3 id="anaUnits">0</h3>
+                        <span class="ana-change"><i class="fas fa-caret-down"></i> 0%</span>
+                    </div>
+                    <div class="ana-metric-card">
+                        <span class="ana-label">AVG. ORDER VALUE</span>
+                        <h3 id="anaAOV">Rs. 0</h3>
+                        <span class="ana-change"><i class="fas fa-caret-up"></i> 0%</span>
+                    </div>
+                </div>
+
+                <!-- Main Charts -->
+                <div class="analytics-charts-grid">
+                    <div class="ana-card chart-container">
+                        <div class="card-header">
+                            <div>
+                                <h3>Revenue vs Profit</h3>
+                                <p>Monthly comparison</p>
+                            </div>
+                            <div class="chart-legend">
+                                <span><span class="dot blue"></span> Revenue</span>
+                                <span><span class="dot green"></span> Profit</span>
+                            </div>
+                        </div>
+                        <canvas id="revProfitChart"></canvas>
+                    </div>
+                    <div class="ana-card chart-container">
+                        <div class="card-header">
+                            <div>
+                                <h3>Stock In vs Out</h3>
+                                <p>Units received vs sold</p>
+                            </div>
+                            <div class="chart-legend">
+                                <span><span class="dot light-blue"></span> Stock In</span>
+                                <span><span class="dot red"></span> Stock Out</span>
+                            </div>
+                        </div>
+                        <canvas id="stockInOutChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Middle Row -->
+                <div class="analytics-middle-grid">
+                    <div class="ana-card aging-analysis">
+                        <h3>Stock Aging Analysis</h3>
+                        <p>Product grouped by how long they have been in stock</p>
+                        
+                        <div class="aging-summary-row">
+                            <div class="age-box green">
+                                <strong>0</strong>
+                                <span>< 30 days</span>
+                            </div>
+                            <div class="age-box cyan">
+                                <strong>0</strong>
+                                <span>30-60 days</span>
+                            </div>
+                            <div class="age-box yellow">
+                                <strong>0</strong>
+                                <span>60-90 days</span>
+                            </div>
+                            <div class="age-box red">
+                                <strong>0</strong>
+                                <span>> 90 days</span>
+                            </div>
+                        </div>
+
+                        <div class="critical-aging-items">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Critical Aging Items (> 90 days)</h4>
+                            <table class="ana-table">
+                                <thead>
+                                    <tr>
+                                        <th>PRODUCT</th>
+                                        <th>SKU</th>
+                                        <th>DAYS IN STOCK</th>
+                                        <th>QTY</th>
+                                        <th>VALUE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="agingTableBody">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="right-sub-grid">
+                        <div class="ana-card category-breakdown">
+                            <h3>Category Breakdown</h3>
+                            <div id="categoryProgressBars">
+                                <!-- Dynamic -->
+                            </div>
+                        </div>
+                        <div class="ana-card top-selling">
+                            <h3><i class="fas fa-tag"></i> Top Selling Products</h3>
+                            <ul class="top-sell-list" id="topSellingList">
+                                <!-- Dynamic -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Metrics -->
+                <div class="analytics-bottom-grid">
+                    <div class="ana-mini-card">
+                        <div class="mini-icon"><i class="far fa-calendar-alt"></i></div>
+                        <span class="label">Avg. Days to Sell</span>
+                        <h3 id="avgDaysSell">18 days</h3>
+                        <span class="sub green-text"><i class="fas fa-caret-down"></i> 3 days faster</span>
+                    </div>
+                    <div class="ana-mini-card">
+                        <div class="mini-icon"><i class="fas fa-sync"></i></div>
+                        <span class="label">Inventory Turnover</span>
+                        <h3 id="invTurnover">4.2x</h3>
+                        <span class="sub green-text"><i class="fas fa-caret-up"></i> Good rate</span>
+                    </div>
+                    <div class="ana-mini-card">
+                        <div class="mini-icon"><i class="far fa-money-bill-alt"></i></div>
+                        <span class="label">Dead Stock Value</span>
+                        <h3 id="deadStockValue" class="red-text">Rs. 2,560</h3>
+                        <span class="sub red-text">86 aging items</span>
+                    </div>
+                    <div class="ana-mini-card">
+                        <div class="mini-icon"><i class="far fa-envelope"></i></div>
+                        <span class="label">Stock Accuracy</span>
+                        <h3 id="stockAccuracy" class="green-text">97.4%</h3>
+                        <span class="sub">Last count: 27 Mar</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="header.js"></script>
+    <script src="analytics.js"></script>
+</body>
+</html>
